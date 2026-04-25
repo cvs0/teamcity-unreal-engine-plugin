@@ -5,8 +5,8 @@ import com.jetbrains.teamcity.plugins.unrealengine.server.extensions.create
 import com.jetbrains.teamcity.plugins.unrealengine.server.extensions.generateIdForVirtualBuild
 import com.jetbrains.teamcity.plugins.unrealengine.server.extensions.markAsGeneratedBy
 import com.jetbrains.teamcity.plugins.unrealengine.server.extensions.setRevisionsFrom
-import jetbrains.buildServer.serverSide.BuildPromotion
 import jetbrains.buildServer.serverSide.BuildAttributes
+import jetbrains.buildServer.serverSide.BuildPromotion
 import jetbrains.buildServer.serverSide.BuildPromotionEx
 import jetbrains.buildServer.serverSide.BuildTypeSettings
 import jetbrains.buildServer.serverSide.SimpleParameter

@@ -82,4 +82,3 @@ class BuildGraphParentTagSyncListenerTests {
         verify(exactly = 0) { parentBuild.setTags(any()) }
     }
 }
-

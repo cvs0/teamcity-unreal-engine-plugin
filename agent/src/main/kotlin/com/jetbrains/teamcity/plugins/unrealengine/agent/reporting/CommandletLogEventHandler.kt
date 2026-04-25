@@ -44,4 +44,3 @@ class CommandletLogEventHandler(
         const val ERROR_COUNT_KEY = "unreal.commandlet.errors"
     }
 }
-

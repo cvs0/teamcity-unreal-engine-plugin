@@ -15,13 +15,12 @@ class UnrealEngineProcessListenerFactory(
     fun create(
         vararg handlers: LogEventHandler,
         reportErrorsAsBuildProblems: Boolean = true,
-    ) =
-        UnrealEngineProcessListener(
-            context.build.buildLogger,
-            logEventParser,
-            handlers.asList(),
-            reportErrorsAsBuildProblems,
-        )
+    ) = UnrealEngineProcessListener(
+        context.build.buildLogger,
+        logEventParser,
+        handlers.asList(),
+        reportErrorsAsBuildProblems,
+    )
 }
 
 class UnrealEngineProcessListener(

@@ -40,4 +40,3 @@ class BuildGraphParentTagSyncListener(
         return parentPromotion.associatedBuild
     }
 }
-
