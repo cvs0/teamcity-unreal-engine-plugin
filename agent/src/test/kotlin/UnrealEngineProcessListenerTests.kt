@@ -116,11 +116,10 @@ class UnrealEngineProcessListenerTests {
     private fun createListener(
         vararg handlers: LogEventHandler,
         reportErrorsAsBuildProblems: Boolean = true,
-    ) =
-        UnrealEngineProcessListener(
-            buildLogger,
-            logEventParser,
-            handlers.asList(),
-            reportErrorsAsBuildProblems,
-        )
+    ) = UnrealEngineProcessListener(
+        buildLogger,
+        logEventParser,
+        handlers.asList(),
+        reportErrorsAsBuildProblems,
+    )
 }

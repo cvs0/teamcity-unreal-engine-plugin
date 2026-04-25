@@ -81,4 +81,3 @@ class CommandletLogEventHandlerTests {
             channel = null,
         )
 }
-
