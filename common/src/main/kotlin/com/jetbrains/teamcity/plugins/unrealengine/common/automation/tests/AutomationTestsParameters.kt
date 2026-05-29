@@ -43,9 +43,11 @@ object AutomationTestsExecCommandParameter : SelectParameter() {
             )
 
         return when (type) {
-            all.name -> RunAll
+            all.name -> {
+                RunAll
+            }
 
-            filter.name ->
+            filter.name -> {
                 RunFilter(
                     AutomationTestsFilterParameter.parse(runnerParameters)
                         ?: raise(
@@ -55,6 +57,7 @@ object AutomationTestsExecCommandParameter : SelectParameter() {
                             ),
                         ),
                 )
+            }
 
             list.name -> {
                 val tests = AutomationTestsParameter.parse(runnerParameters)
@@ -68,7 +71,9 @@ object AutomationTestsExecCommandParameter : SelectParameter() {
                 )
             }
 
-            else -> raise(PropertyValidationError(name, "Unknown automation test run mode."))
+            else -> {
+                raise(PropertyValidationError(name, "Unknown automation test run mode."))
+            }
         }
     }
 }

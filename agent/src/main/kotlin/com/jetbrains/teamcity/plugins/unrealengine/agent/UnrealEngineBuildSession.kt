@@ -31,7 +31,10 @@ class UnrealEngineBuildSession(
                             logger.error("There was an error during workflow construction: ${result.value.message}")
                             throw RunBuildException("Workflow cannot be created. Error: ${result.value.message}")
                         }
-                        is Either.Right -> result.value
+
+                        is Either.Right -> {
+                            result.value
+                        }
                     }
             }
         }
@@ -57,7 +60,10 @@ class UnrealEngineBuildSession(
     private fun processPreviousCommandCompletion() {
         executingCommands.removeLastOrNull()?.let {
             when (val state = it.state) {
-                is UnrealEngineCommandState.Finished -> exitCodes.add(state.exitCode)
+                is UnrealEngineCommandState.Finished -> {
+                    exitCodes.add(state.exitCode)
+                }
+
                 else -> {
                     logger.warn(
                         "Next session command has been requested, but the previous one hasn't been completed yet." +

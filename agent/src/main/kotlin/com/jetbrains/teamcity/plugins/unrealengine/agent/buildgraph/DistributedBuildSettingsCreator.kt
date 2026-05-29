@@ -59,6 +59,7 @@ class DistributedBuildSettingsCreator(
                     runnerInternalSettings.compositeBuildId,
                 )
             }
+
             is BuildGraphRunnerInternalSettings.RegularBuildSettings -> {
                 DistributedBuildSettings.RegularBuildSettings(
                     sharedStorageDir,

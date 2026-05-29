@@ -88,6 +88,7 @@ class UnrealToolRegistry(
                 )
                 context.resolvePath(executable.ensureProperExtension())
             }
+
             isFileName(executable) -> {
                 val path =
                     context.resolvePath(
@@ -100,6 +101,7 @@ class UnrealToolRegistry(
                 )
                 path
             }
+
             else -> {
                 val path = context.resolvePath(engine.path.value, executable.ensureProperExtension())
                 logger.debug(

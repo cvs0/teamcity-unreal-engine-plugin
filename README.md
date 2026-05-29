@@ -34,7 +34,7 @@ You can contribute by sending a Pull Request, opening an issue on GitHub, or rea
 ### Prerequisites
 
 * Docker
-* Amazon JDK 11
+* JDK 21
 
 ### Building
 

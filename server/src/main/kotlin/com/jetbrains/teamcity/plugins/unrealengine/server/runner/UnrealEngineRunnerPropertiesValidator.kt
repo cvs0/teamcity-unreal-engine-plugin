@@ -24,11 +24,15 @@ class UnrealEngineRunnerPropertiesValidator(
             }
 
         return when (result) {
-            is Either.Left ->
+            is Either.Left -> {
                 result.value
                     .map { InvalidProperty(it.propertyName, it.message) }
                     .toMutableList()
-            is Either.Right -> mutableListOf()
+            }
+
+            is Either.Right -> {
+                mutableListOf()
+            }
         }
     }
 }

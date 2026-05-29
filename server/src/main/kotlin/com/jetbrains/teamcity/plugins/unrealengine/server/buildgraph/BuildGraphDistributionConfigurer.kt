@@ -80,6 +80,7 @@ class BuildGraphDistributionConfigurer(
                     )
                     return@sequence
                 }
+
                 is Either.Right -> {
                     yield(result.value)
                 }

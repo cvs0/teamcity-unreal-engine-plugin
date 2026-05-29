@@ -110,7 +110,10 @@ object BuildGraphModeParameter : SelectParameter() {
         val modeRaw = runnerParameters[name] ?: return BuildGraphMode.SingleMachine
 
         return when (modeRaw) {
-            singleMachine.name -> BuildGraphMode.SingleMachine
+            singleMachine.name -> {
+                BuildGraphMode.SingleMachine
+            }
+
             distributed.name -> {
                 val postBadges = runnerParameters[PostBadgesFromGraphParameter.name].toBoolean()
                 val metadataServerUrl = runnerParameters[UgsMetadataServerUrlParameter.name]
@@ -124,7 +127,10 @@ object BuildGraphModeParameter : SelectParameter() {
                 }
                 BuildGraphMode.Distributed(if (postBadges) UgsMetadataServerUrl(metadataServerUrl!!) else null)
             }
-            else -> raise(PropertyValidationError(name, "Unknown BuildGraph mode value $modeRaw"))
+
+            else -> {
+                raise(PropertyValidationError(name, "Unknown BuildGraph mode value $modeRaw"))
+            }
         }
     }
 }

@@ -43,11 +43,20 @@ class BuildStepExecutionMonitor(
 
         val event =
             when (status) {
-                BuildFinishedStatus.INTERRUPTED -> BuildStepInterrupted(stepName)
-                BuildFinishedStatus.FINISHED_SUCCESS -> BuildStepCompleted(stepName, StepOutcome.Success)
+                BuildFinishedStatus.INTERRUPTED -> {
+                    BuildStepInterrupted(stepName)
+                }
+
+                BuildFinishedStatus.FINISHED_SUCCESS -> {
+                    BuildStepCompleted(stepName, StepOutcome.Success)
+                }
+
                 BuildFinishedStatus.FINISHED_FAILED,
                 BuildFinishedStatus.FINISHED_WITH_PROBLEMS,
-                -> BuildStepCompleted(stepName, StepOutcome.Failure)
+                -> {
+                    BuildStepCompleted(stepName, StepOutcome.Failure)
+                }
+
                 else -> {
                     logger.warn("Received unexpected build finish status: $status. Doing nothing")
                     return

@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Added
-
 ### Changed
+
+- Updated the plugin build to target TeamCity 2026.1 and Java 21
+- Updated Kotlin, Ktor, Arrow, coroutines, JUnit, MockK, Gradle, and other build dependencies
+- Fixed Gradle 10 deprecation in the frontend build task and added an npm fallback when Docker is unavailable
+
+### Added
 
 ### Fixed
 

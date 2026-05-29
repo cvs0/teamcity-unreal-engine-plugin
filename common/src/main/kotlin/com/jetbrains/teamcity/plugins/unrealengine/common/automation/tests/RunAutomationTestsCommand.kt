@@ -79,8 +79,14 @@ data class RunAutomationTestsCommand(
                 buildString {
                     append("-ExecCmds=Automation ")
                     when (execCommand) {
-                        is ExecCommand.RunAll -> append("RunAll;")
-                        is ExecCommand.RunFilter -> append("RunFilter ${execCommand.filter.name};")
+                        is ExecCommand.RunAll -> {
+                            append("RunAll;")
+                        }
+
+                        is ExecCommand.RunFilter -> {
+                            append("RunFilter ${execCommand.filter.name};")
+                        }
+
                         is ExecCommand.RunTests -> {
                             append("RunTests ")
                             append(execCommand.tests.joinToString(separator = "+") { it.value })

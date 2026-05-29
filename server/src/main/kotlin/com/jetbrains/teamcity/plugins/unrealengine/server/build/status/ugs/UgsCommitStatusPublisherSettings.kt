@@ -65,6 +65,7 @@ class UgsCommitStatusPublisherSettings(
                     }.onLeft {
                         when (it) {
                             is GenericError -> throw PublisherException(it.message, it.exception)
+
                             else -> throw PublisherException(
                                 "An unexpected error occurred while testing the connection to the metadata server",
                             )
@@ -108,11 +109,15 @@ class UgsCommitStatusPublisherSettings(
     override fun getParametersProcessor(unused: BuildTypeIdentity) =
         PropertiesProcessor { parameters ->
             when (val result = parametersParser.parse(parameters)) {
-                is Either.Left ->
+                is Either.Left -> {
                     result.value
                         .map { InvalidProperty(it.propertyName, it.message) }
                         .toMutableList()
-                is Either.Right -> emptyList()
+                }
+
+                is Either.Right -> {
+                    emptyList()
+                }
             }
         }
 }

@@ -34,11 +34,15 @@ class UnrealEngineRunType(
         val mode = either { EngineDetectionModeParameter.parseDetectionMode(runParameters) }.getOrNull() ?: return mutableListOf()
 
         return when (mode) {
-            is EngineDetectionMode.Automatic ->
+            is EngineDetectionMode.Automatic -> {
                 mutableListOf(
                     Requirements.engineExists(mode.identifier),
                 )
-            is EngineDetectionMode.Manual -> mutableListOf()
+            }
+
+            is EngineDetectionMode.Manual -> {
+                mutableListOf()
+            }
         }
     }
 

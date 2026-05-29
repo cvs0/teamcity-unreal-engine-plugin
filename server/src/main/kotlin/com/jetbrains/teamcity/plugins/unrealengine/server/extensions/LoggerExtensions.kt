@@ -33,11 +33,15 @@ fun Logger.logResult(
                         warn("$errorMessagePrefix ${error.message}")
                     }
                 }
+
                 else -> {
                     warn("An unexpected error occurred in the context of \"$context\"")
                 }
             }
         }
-        is Either.Right -> successMessage?.let { debug(it) }
+
+        is Either.Right -> {
+            successMessage?.let { debug(it) }
+        }
     }
 }

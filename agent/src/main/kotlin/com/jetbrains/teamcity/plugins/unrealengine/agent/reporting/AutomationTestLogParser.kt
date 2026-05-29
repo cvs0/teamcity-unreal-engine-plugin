@@ -57,11 +57,30 @@ object AutomationTestLogParser {
 
     private fun parseTestResult(result: String): TestResult =
         when (result) {
-            "Success" -> TestResult.Success // UE5
-            "Fail" -> TestResult.Fail // UE5
-            "Passed" -> TestResult.Success // UE4
-            "Failed" -> TestResult.Fail // UE4
-            "Skipped" -> TestResult.Skipped
+            "Success" -> {
+                TestResult.Success
+            }
+
+            // UE5
+            "Fail" -> {
+                TestResult.Fail
+            }
+
+            // UE5
+            "Passed" -> {
+                TestResult.Success
+            }
+
+            // UE4
+            "Failed" -> {
+                TestResult.Fail
+            }
+
+            // UE4
+            "Skipped" -> {
+                TestResult.Skipped
+            }
+
             else -> {
                 agentLogger.warn("Unknown \"$result\" test result")
 

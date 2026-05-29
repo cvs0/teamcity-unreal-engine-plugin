@@ -39,13 +39,18 @@ class BuildGraphBadgePublisher(
 
     override suspend fun consume(event: DistributedBuildStateChanged) {
         when (val result = either { handleStateChange(event) }) {
-            is Either.Left ->
+            is Either.Left -> {
                 when (val error = result.value) {
-                    is ProcessingSkipped ->
+                    is ProcessingSkipped -> {
                         logger.debug("State update for the build ${event.buildId} skipped because: ${error.reason}")
-                    is GenericError ->
+                    }
+
+                    is GenericError -> {
                         logger.logError(error, "An unexpected error occurred processing state update for the build ${event.buildId}:")
+                    }
                 }
+            }
+
             is Either.Right -> {
                 logger.debug("State update for the build ${event.buildId} processed successfully")
             }
@@ -77,25 +82,41 @@ class BuildGraphBadgePublisher(
                 is BadgePostingConfig.Disabled -> {
                     raise(ProcessingSkipped("Badge posting is not enabled for this build"))
                 }
-                is BadgePostingConfig.Enabled -> (badgePostingConfig.ugsMetadataServerUrl to badgePostingConfig.badges.asSequence())
+
+                is BadgePostingConfig.Enabled -> {
+                    (badgePostingConfig.ugsMetadataServerUrl to badgePostingConfig.badges.asSequence())
+                }
             }
 
         val badgesToPost =
             when (event) {
-                is DistributedBuildStateChanged.BuildStepStarted -> findStartingBadges(buildBadges, event).map { it to BadgeState.Starting }
-                is DistributedBuildStateChanged.BuildSkipped -> findSkippedBadges(buildBadges, event).map { it to BadgeState.Skipped }
-                is DistributedBuildStateChanged.BuildStepCompleted ->
+                is DistributedBuildStateChanged.BuildStepStarted -> {
+                    findStartingBadges(buildBadges, event).map { it to BadgeState.Starting }
+                }
+
+                is DistributedBuildStateChanged.BuildSkipped -> {
+                    findSkippedBadges(buildBadges, event).map { it to BadgeState.Skipped }
+                }
+
+                is DistributedBuildStateChanged.BuildStepCompleted -> {
                     when (event.stepOutcome) {
-                        StepOutcome.Success ->
+                        StepOutcome.Success -> {
                             findSucceededBadges(buildBadges, event).map { it to BadgeState.Success } +
                                 findSkippedBadges(buildBadges, event).map { it to BadgeState.Skipped }
-                        StepOutcome.Failure -> findFailedBadges(buildBadges, event).map { it to BadgeState.Failure }
+                        }
+
+                        StepOutcome.Failure -> {
+                            findFailedBadges(buildBadges, event).map { it to BadgeState.Failure }
+                        }
                     }
-                is DistributedBuildStateChanged.BuildStepInterrupted ->
+                }
+
+                is DistributedBuildStateChanged.BuildStepInterrupted -> {
                     findSkippedBadges(
                         buildBadges,
                         event,
                     ).map { it to BadgeState.Skipped }
+                }
             }
 
         val changeLists = build.getPerforceChangelists()
@@ -262,8 +283,7 @@ class BuildGraphBadgePublisher(
                 badge.nodes
                     .mapNotNull { stepsByName[it] }
                     .all {
-                        it.state == BuildStepState.Completed &&
-                            it.outcome == StepOutcome.Success ||
+                        (it.state == BuildStepState.Completed && it.outcome == StepOutcome.Success) ||
                             it.state == BuildStepState.Skipped ||
                             it.state == BuildStepState.Interrupted
                     }

@@ -39,14 +39,21 @@ class AgentBuildStateEventMonitor(
 
         val serverSideEvent =
             when (event) {
-                is AgentBuildEvent.BuildStepCompleted ->
+                is AgentBuildEvent.BuildStepCompleted -> {
                     DistributedBuildEvent.BuildStepCompleted(
                         build,
                         event.name,
                         event.outcome,
                     )
-                is AgentBuildEvent.BuildStepStarted -> DistributedBuildEvent.BuildStepStarted(build, event.name)
-                is AgentBuildEvent.BuildStepInterrupted -> DistributedBuildEvent.BuildStepInterrupted(build, event.name)
+                }
+
+                is AgentBuildEvent.BuildStepStarted -> {
+                    DistributedBuildEvent.BuildStepStarted(build, event.name)
+                }
+
+                is AgentBuildEvent.BuildStepInterrupted -> {
+                    DistributedBuildEvent.BuildStepInterrupted(build, event.name)
+                }
             }
 
         stateTracker.handleBuildEvent(serverSideEvent)
