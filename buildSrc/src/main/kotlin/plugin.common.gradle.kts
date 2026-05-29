@@ -30,7 +30,7 @@ teamcity {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -46,14 +46,14 @@ tasks {
 		compilerOptions {
 			allWarningsAsErrors.set(true)
             freeCompilerArgs.add("-Xcontext-parameters")
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
 		}
     }
 
     compileTestKotlin {
         compilerOptions {
             freeCompilerArgs.add("-Xcontext-parameters")
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 

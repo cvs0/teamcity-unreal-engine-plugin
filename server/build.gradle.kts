@@ -6,6 +6,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
+import org.gradle.process.ExecResult
+import java.io.ByteArrayOutputStream
+import java.io.File
+import javax.inject.Inject
+
 changelog {
     path.set(file("../CHANGELOG.md").canonicalPath)
     groups.set(listOf("Added", "Changed", "Fixed"))
@@ -64,19 +75,64 @@ teamcity {
 abstract class BuildFrontendTask
     @Inject constructor(private val operations: ExecOperations)
 : DefaultTask() {
+    @get:Internal
+    abstract val frontendDir: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val reactOutputDir: DirectoryProperty
+
     @TaskAction
     fun doTaskAction() {
+        val frontend = frontendDir.get().asFile
+        val output = reactOutputDir.get().asFile
+
+        if (isDockerAvailable()) {
+            buildWithDocker(frontend, output)
+        } else {
+            buildWithNpm(frontend, output)
+        }
+    }
+
+    private fun isDockerAvailable(): Boolean {
+        val result: ExecResult =
+            operations.exec {
+                commandLine("docker", "info")
+                isIgnoreExitValue = true
+                standardOutput = ByteArrayOutputStream()
+                errorOutput = ByteArrayOutputStream()
+            }
+        return result.exitValue == 0
+    }
+
+    private fun buildWithDocker(frontend: File, output: File) {
         operations.exec {
-            workingDir(project.file("frontend"))
+            workingDir(frontend)
             commandLine("docker", "build", "-f", "./build.Dockerfile", "-t", "unreal-runner-frontend-build", ".")
         }
         operations.exec { commandLine("docker", "run", "--name", "unreal-runner-frontend-build", "unreal-runner-frontend-build") }
-        operations.exec { commandLine("docker", "cp", "unreal-runner-frontend-build:/app/dist/.", "./src/main/resources/buildServerResources/react") }
+        operations.exec {
+            commandLine("docker", "cp", "unreal-runner-frontend-build:/app/dist/.", output.absolutePath)
+        }
         operations.exec { commandLine("docker", "rm", "-v", "-f", "unreal-runner-frontend-build") }
+    }
+
+    private fun buildWithNpm(frontend: File, output: File) {
+        val npm = if (System.getProperty("os.name").startsWith("Windows")) "npm.cmd" else "npm"
+        operations.exec {
+            workingDir(frontend)
+            commandLine(npm, "ci")
+        }
+        operations.exec {
+            workingDir(frontend)
+            commandLine(npm, "run", "build", "--", "-o", output.absolutePath)
+        }
     }
 }
 
-val buildFront = tasks.register<BuildFrontendTask>("buildFront")
+val buildFront = tasks.register<BuildFrontendTask>("buildFront") {
+    frontendDir.set(layout.projectDirectory.dir("frontend"))
+    reactOutputDir.set(layout.projectDirectory.dir("src/main/resources/buildServerResources/react"))
+}
 
 tasks.processResources {
     dependsOn(buildFront)

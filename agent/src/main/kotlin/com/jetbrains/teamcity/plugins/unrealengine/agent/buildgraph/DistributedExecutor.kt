@@ -38,6 +38,7 @@ class DistributedExecutor(
                     setupCommand(settings, command),
                 )
             }
+
             is DistributedBuildSettings.RegularBuildSettings -> {
                 listOf(
                     executeCommand(settings, command),

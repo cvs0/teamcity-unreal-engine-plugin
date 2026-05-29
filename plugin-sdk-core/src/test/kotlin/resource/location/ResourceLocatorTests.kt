@@ -10,23 +10,18 @@ import com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocato
 import com.jetbrains.teamcity.plugins.framework.resource.location.queries.map
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
-import java.io.ByteArrayInputStream
+import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
-import java.nio.file.LinkOption
-import java.nio.file.OpenOption
 import java.nio.file.Path
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 internal class ResourceLocatorTests {
     @Test
-    fun `should only return results for MacOS when requested`() = runTest {
-        val locator = createLocator(createEnvironment(OSType.MacOs))
+    fun `should only return results for MacOS when requested`(@TempDir tempDir: Path) = runTest {
+        val locator = createLocator(createEnvironment(OSType.MacOs), tempDir)
 
         val result = locator.locateResources { buildQuery() }
 
@@ -37,8 +32,8 @@ internal class ResourceLocatorTests {
     }
 
     @Test
-    fun `should only return results for Windows when requested`() = runTest {
-        val locator = createLocator(createEnvironment(OSType.Windows))
+    fun `should only return results for Windows when requested`(@TempDir tempDir: Path) = runTest {
+        val locator = createLocator(createEnvironment(OSType.Windows), tempDir)
 
         val result = locator.locateResources { buildQuery() }
 
@@ -49,8 +44,8 @@ internal class ResourceLocatorTests {
     }
 
     @Test
-    fun `should only return results for Linux when requested`() = runTest {
-        val locator = createLocator(createEnvironment(OSType.Linux))
+    fun `should only return results for Linux when requested`(@TempDir tempDir: Path) = runTest {
+        val locator = createLocator(createEnvironment(OSType.Linux), tempDir)
 
         val result = locator.locateResources { buildQuery() }
 
@@ -67,23 +62,17 @@ internal class ResourceLocatorTests {
         override fun getEnvironmentVariable(name: String) = null
     }
 
-    private fun createLocator(environment: Environment): ResourceLocator {
-        mockkStatic(Files::exists)
-        every { Files.exists(any(), *anyVararg<LinkOption>()) } returns true
-        every { Files.isDirectory(any(), *anyVararg<LinkOption>()) } returns false
-
-        val content = environment.osType.toString()
-        every {
-            Files.newInputStream(
-                any(),
-                *anyVararg<OpenOption>()
-            )
-        } returns ByteArrayInputStream(content.toByteArray())
+    private fun createLocator(
+        environment: Environment,
+        tempDir: Path,
+    ): ResourceLocator {
+        val filePath = tempDir.resolve("foo")
+        Files.writeString(filePath, environment.osType.toString())
 
         return ResourceLocator(
             environment,
             mockk<ResourceLocationContext> {
-                every { pathOf(any()) } returns mockk<Path>()
+                every { pathOf(any()) } returns filePath
                 every { commandLineRunner } returns CommandLineRunner()
             },
         )
@@ -93,10 +82,5 @@ internal class ResourceLocatorTests {
         windows({ file("foo").map { OSType.valueOf(it.readText()) } })
         linux({ file("foo").map { OSType.valueOf(it.readText()) } })
         macos({ file("foo").map { OSType.valueOf(it.readText()) } })
-    }
-
-    @AfterTest
-    fun removeMocks() {
-        unmockkAll()
     }
 }

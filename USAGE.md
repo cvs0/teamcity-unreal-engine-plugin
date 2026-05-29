@@ -309,7 +309,8 @@ Recommended checks:
 
 ### Limitations
 
-* Although TeamCity still supports Java 8, this plugin is compatible with Java 11 or newer.
+* This plugin requires TeamCity 2023.05 or newer and is built against TeamCity 2026.1.
+* TeamCity 2026.1 requires Java 21 on the server and build agents. This plugin is compatible with Java 21.
 * Currently, for the distributed BuildGraph mode to work,
   your build configuration must contain exactly one active build step.
   This should be addressed in [TW-89015](https://youtrack.jetbrains.com/issue/TW-89015)

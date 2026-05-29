@@ -36,6 +36,7 @@ object EngineDetectionModeParameter : SelectParameter() {
                 }
                 EngineDetectionMode.Automatic(UnrealEngineIdentifier(engineIdentifier))
             }
+
             manual.name -> {
                 val engineRootDirectory = runnerParameters[UnrealEngineRootParameter.name]
                 if (engineRootDirectory.isNullOrEmpty()) {
@@ -48,6 +49,7 @@ object EngineDetectionModeParameter : SelectParameter() {
                 }
                 EngineDetectionMode.Manual(UnrealEngineRootPath(engineRootDirectory))
             }
+
             else -> {
                 raise(PropertyValidationError(name, "Unknown detection mode."))
             }

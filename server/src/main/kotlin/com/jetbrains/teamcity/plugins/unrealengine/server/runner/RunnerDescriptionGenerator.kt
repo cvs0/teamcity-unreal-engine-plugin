@@ -28,29 +28,37 @@ class RunnerDescriptionGenerator {
         either {
             val commandParameters =
                 when (UnrealCommandTypeParameter.parse(runnerParameters)) {
-                    UnrealCommandType.BuildCookRun ->
+                    UnrealCommandType.BuildCookRun -> {
                         sequenceOf(
                             UnrealCommandTypeParameter,
                             BuildCookRunProjectPathParameter,
                         )
-                    UnrealCommandType.BuildGraph ->
+                    }
+
+                    UnrealCommandType.BuildGraph -> {
                         sequenceOf(
                             UnrealCommandTypeParameter,
                             BuildGraphScriptPathParameter,
                             BuildGraphTargetNodeParameter,
                             BuildGraphModeParameter,
                         )
-                    UnrealCommandType.RunAutomationTests ->
+                    }
+
+                    UnrealCommandType.RunAutomationTests -> {
                         sequenceOf(
                             UnrealCommandTypeParameter,
                             AutomationTestsProjectPathParameter,
                         )
-                    UnrealCommandType.RunAutomationCommand ->
+                    }
+
+                    UnrealCommandType.RunAutomationCommand -> {
                         sequenceOf(
                             UnrealCommandTypeParameter,
                             AutomationCommandNameParameter,
                         )
-                    UnrealCommandType.RunCommandlet ->
+                    }
+
+                    UnrealCommandType.RunCommandlet -> {
                         sequenceOf(
                             UnrealCommandTypeParameter,
                             EditorExecutableParameter,
@@ -58,6 +66,7 @@ class RunnerDescriptionGenerator {
                             CommandletNameParameter,
                             CommandletArgumentsParameter,
                         )
+                    }
                 }.associate {
                     when (it) {
                         is SelectParameter -> it.displayName to it.getOptionDisplayName(runnerParameters[it.name])
@@ -67,16 +76,19 @@ class RunnerDescriptionGenerator {
 
             val detectionModeParameters =
                 when (val detectionMode = EngineDetectionModeParameter.parseDetectionMode(runnerParameters)) {
-                    is EngineDetectionMode.Automatic ->
+                    is EngineDetectionMode.Automatic -> {
                         mapOf(
                             "Engine detection mode" to "Auto",
                             "Engine identifier" to detectionMode.identifier.value,
                         )
-                    is EngineDetectionMode.Manual ->
+                    }
+
+                    is EngineDetectionMode.Manual -> {
                         mapOf(
                             "Engine detection mode" to "Manual",
                             "Engine Root path" to detectionMode.engineRootPath.value,
                         )
+                    }
                 }
 
             (commandParameters + detectionModeParameters)

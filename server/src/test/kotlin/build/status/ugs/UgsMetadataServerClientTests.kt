@@ -10,7 +10,7 @@ import com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs.UgsMe
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
 import kotlin.test.Test
 
@@ -20,15 +20,12 @@ class UgsMetadataServerClientTests {
 
     @Test
     fun `tests connection`() =
-        runTest {
-            // arrange
+        runBlocking {
             val mockEngine = createMockEngine()
             val metadataServerClient = UgsMetadataServerClient(mockEngine, UgsMetadataServerSettings())
 
-            // act
             val result = either { metadataServerClient.testConnection(ugsServerUrl) }
 
-            // assert
             result.isRight() shouldBe true
             mockEngine.requestHistory.size shouldBe 1
             val request = mockEngine.requestHistory.first()
@@ -37,8 +34,7 @@ class UgsMetadataServerClientTests {
 
     @Test
     fun `publishes badge (V1 Metadata Server)`() =
-        runTest {
-            // arrange
+        runBlocking {
             val mockEngine = createMockEngine(versionResponse = "{}")
             val client = UgsMetadataServerClient(mockEngine, UgsMetadataServerSettings())
             val metadata =
@@ -50,10 +46,8 @@ class UgsMetadataServerClientTests {
                     badgeState = BadgeState.Success,
                 )
 
-            // act
             val result = either { client.postBuildMetadata(ugsServerUrl, metadata) }
 
-            // assert
             result.isRight() shouldBe true
             mockEngine.requestHistory.size shouldBe 2
 
@@ -68,8 +62,7 @@ class UgsMetadataServerClientTests {
 
     @Test
     fun `publishes badge (V2 Metadata Server)`() =
-        runTest {
-            // arrange
+        runBlocking {
             val mockEngine = createMockEngine(versionResponse = """{"Version":2}""")
 
             val client = UgsMetadataServerClient(mockEngine, UgsMetadataServerSettings())
@@ -82,10 +75,8 @@ class UgsMetadataServerClientTests {
                     badgeState = BadgeState.Success,
                 )
 
-            // act
             val result = either { client.postBuildMetadata(ugsServerUrl, metadata) }
 
-            // assert
             result.isRight() shouldBe true
             mockEngine.requestHistory.size shouldBe 2
 
@@ -98,7 +89,7 @@ class UgsMetadataServerClientTests {
                 """{"stream":"//depot/stream","change":111,"project":"project","badges":[{"name":"foo","url":"http://link-to-build-log","state":3}]}"""
         }
 
-    private fun createMockEngine(versionResponse: String = ""): MockEngine =
+    private fun createMockEngine(versionResponse: String = """{"Version":1}"""): MockEngine =
         MockEngine { request ->
             when {
                 request.url.encodedPath.contains("api/latest") -> {
@@ -108,6 +99,7 @@ class UgsMetadataServerClientTests {
                         headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
                     )
                 }
+
                 else -> {
                     respond("", HttpStatusCode.OK)
                 }

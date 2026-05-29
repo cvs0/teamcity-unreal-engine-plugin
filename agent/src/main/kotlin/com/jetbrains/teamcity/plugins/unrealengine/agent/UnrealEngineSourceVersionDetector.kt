@@ -74,7 +74,10 @@ class UnrealEngineSourceVersionDetector(
             )
 
         return when (result) {
-            is ResourceLocationResult.Error -> raise(result.message)
+            is ResourceLocationResult.Error -> {
+                raise(result.message)
+            }
+
             is ResourceLocationResult.Success -> {
                 logger.info("Version '${result.data}' was found in 'Build.version' file")
                 result.data
@@ -108,7 +111,10 @@ class UnrealEngineSourceVersionDetector(
             )
 
         return when (result) {
-            is ResourceLocationResult.Error -> raise(result.message)
+            is ResourceLocationResult.Error -> {
+                raise(result.message)
+            }
+
             is ResourceLocationResult.Success -> {
                 val version = result.data.buildVersion()
 
@@ -129,12 +135,15 @@ class UnrealEngineSourceVersionDetector(
                     "MAJOR" -> {
                         currentVersion.copy(major = partVersion.toInt())
                     }
+
                     "MINOR" -> {
                         currentVersion.copy(minor = partVersion.toInt())
                     }
+
                     "PATCH" -> {
                         currentVersion.copy(patch = partVersion.toInt())
                     }
+
                     else -> {
                         logger.warn(
                             "Found '$foundLine' line matched version regex '$versionPartRegex', " +

@@ -61,10 +61,12 @@ class UnrealEngineProcessListener(
                     buildLogger.warning(event.message)
                 }
             }
+
             LogLevel.Warning -> {
                 buildStdOutLogger.warn(event.message)
                 buildLogger.warning(event.message)
             }
+
             else -> {
                 buildStdOutLogger.info(event.message)
                 buildLogger.message(event.message)

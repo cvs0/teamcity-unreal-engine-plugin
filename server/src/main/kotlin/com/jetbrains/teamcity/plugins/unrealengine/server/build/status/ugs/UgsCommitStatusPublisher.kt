@@ -91,6 +91,7 @@ class UgsCommitStatusPublisher(
                 }.mapLeft {
                     when (it) {
                         is GenericError -> throw PublisherException(it.message, it.exception)
+
                         else -> throw PublisherException(
                             "An unexpected error occurred during build status publication to the UGS metadata server",
                         )

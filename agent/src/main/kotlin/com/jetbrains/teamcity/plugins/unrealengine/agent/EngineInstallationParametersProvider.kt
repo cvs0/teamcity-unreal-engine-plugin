@@ -108,16 +108,23 @@ class EngineInstallationParametersProvider(
                 when (result) {
                     is ResourceLocationResult.Error -> {
                         when (result.exception) {
-                            null -> logger.info("One of the location queries ended up with an error: ${result.message}")
-                            else ->
+                            null -> {
+                                logger.info("One of the location queries ended up with an error: ${result.message}")
+                            }
+
+                            else -> {
                                 logger.info(
                                     "One of the location queries ended up with an error: ${result.message}",
                                     result.exception,
                                 )
+                            }
                         }
                         emptyList()
                     }
-                    is ResourceLocationResult.Success -> result.data
+
+                    is ResourceLocationResult.Success -> {
+                        result.data
+                    }
                 }
             }.map {
                 logger.info("Discovered Unreal Engine installation. Identifier: ${it.identifier}, path: ${it.location}")

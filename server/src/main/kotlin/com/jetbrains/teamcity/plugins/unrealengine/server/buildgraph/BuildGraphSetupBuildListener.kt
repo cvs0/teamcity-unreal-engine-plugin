@@ -17,16 +17,26 @@ class BuildGraphSetupBuildListener(
 
     override fun beforeBuildFinish(runningBuild: SRunningBuild) =
         when (val result = either { orchestrator.setupDistributedBuild(runningBuild) }) {
-            is Either.Left ->
+            is Either.Left -> {
                 when (val error = result.value) {
-                    is BuildSkipped -> logger.debug("Skipping build. Details: ${error.message}")
+                    is BuildSkipped -> {
+                        logger.debug("Skipping build. Details: ${error.message}")
+                    }
+
                     is GenericError -> {
                         logger.logError(error, "An error occurred processing finishing build graph setup build: ")
                         error.exception?.let { throw it }
                         Unit
                     }
-                    else -> logger.error("An unexpected error occurred processing finishing build graph setup build")
+
+                    else -> {
+                        logger.error("An unexpected error occurred processing finishing build graph setup build")
+                    }
                 }
-            is Either.Right -> logger.debug("Successfully processed finishing build graph setup build ${runningBuild.fullName}")
+            }
+
+            is Either.Right -> {
+                logger.debug("Successfully processed finishing build graph setup build ${runningBuild.fullName}")
+            }
         }
 }

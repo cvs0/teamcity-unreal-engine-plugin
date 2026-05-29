@@ -23,7 +23,9 @@ class CommandletLogEventHandler(
                 publishStatistic(ERROR_COUNT_KEY, errorCount)
             }
 
-            else -> Unit
+            else -> {
+                Unit
+            }
         }
 
         // Let the normal listener pipeline continue to keep existing logging behavior.

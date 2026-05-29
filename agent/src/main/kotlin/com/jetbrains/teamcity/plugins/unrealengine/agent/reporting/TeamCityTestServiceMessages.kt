@@ -18,20 +18,24 @@ fun TestCompletedInfo.asServiceMessages() =
     sequence {
         val formattedTestName = TeamCityTestNameFormatter.format(name, fullName)
         when (result) {
-            TestResult.Success ->
+            TestResult.Success -> {
                 yield(
                     TestFinished(
                         formattedTestName,
                         DURATION_CALCULATED,
                     ),
                 )
+            }
 
             TestResult.Fail -> {
                 yield(TestFailed(formattedTestName, null as String?))
                 yield(TestFinished(formattedTestName, DURATION_CALCULATED))
             }
 
-            TestResult.Skipped -> yield(TestIgnored(formattedTestName, ""))
+            TestResult.Skipped -> {
+                yield(TestIgnored(formattedTestName, ""))
+            }
+
             TestResult.Unknown -> {}
         }
     }

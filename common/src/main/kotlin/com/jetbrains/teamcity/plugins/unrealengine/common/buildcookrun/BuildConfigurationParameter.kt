@@ -41,10 +41,22 @@ object BuildConfigurationParameter : SelectParameter() {
     context(_: Raise<NonEmptyList<PropertyValidationError>>)
     fun parseBuildConfiguration(runnerParameters: Map<String, String>) =
         when (runnerParameters[name]) {
-            standalone.name -> parseStandalone(runnerParameters)
-            client.name -> parseClient(runnerParameters)
-            server.name -> parseServer(runnerParameters)
-            clientAndServer.name -> parseClientAndServer(runnerParameters)
+            standalone.name -> {
+                parseStandalone(runnerParameters)
+            }
+
+            client.name -> {
+                parseClient(runnerParameters)
+            }
+
+            server.name -> {
+                parseServer(runnerParameters)
+            }
+
+            clientAndServer.name -> {
+                parseClientAndServer(runnerParameters)
+            }
+
             else -> {
                 raise(nonEmptyListOf(PropertyValidationError(name, "Unknown build configuration type.")))
             }

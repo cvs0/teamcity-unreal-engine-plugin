@@ -17,21 +17,28 @@ class UnrealCommandCreator {
     context(_: Raise<NonEmptyList<PropertyValidationError>>)
     fun create(runnerParameters: Map<String, String>): UnrealCommand =
         when (val result = either { UnrealCommandTypeParameter.parse(runnerParameters) }) {
-            is Either.Left -> raise(nonEmptyListOf(result.value))
+            is Either.Left -> {
+                raise(nonEmptyListOf(result.value))
+            }
+
             is Either.Right -> {
                 when (result.value) {
                     UnrealCommandType.BuildCookRun -> {
                         BuildCookRunCommand.from(runnerParameters)
                     }
+
                     UnrealCommandType.BuildGraph -> {
                         BuildGraphCommand.from(runnerParameters)
                     }
+
                     UnrealCommandType.RunAutomationTests -> {
                         RunAutomationTestsCommand.from(runnerParameters)
                     }
+
                     UnrealCommandType.RunCommandlet -> {
                         RunCommandletCommand.from(runnerParameters)
                     }
+
                     UnrealCommandType.RunAutomationCommand -> {
                         RunAutomationCommand.from(runnerParameters)
                     }

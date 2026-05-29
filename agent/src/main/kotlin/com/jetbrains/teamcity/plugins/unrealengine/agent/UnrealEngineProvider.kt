@@ -37,6 +37,7 @@ class UnrealEngineProvider(
                 is EngineDetectionMode.Automatic -> {
                     findAmongAgentInstalledEngines(mode.identifier)
                 }
+
                 is EngineDetectionMode.Manual -> {
                     UnrealEngineRootPath(context.resolveUserPath(mode.engineRootPath.value))
                 }
