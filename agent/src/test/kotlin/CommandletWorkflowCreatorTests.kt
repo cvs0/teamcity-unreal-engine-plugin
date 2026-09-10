@@ -5,7 +5,6 @@ import com.jetbrains.teamcity.plugins.framework.common.OSType
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealBuildContext
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealTool
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealToolRegistry
-import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealToolType
 import com.jetbrains.teamcity.plugins.unrealengine.agent.build.log.UnrealEngineProcessListenerFactory
 import com.jetbrains.teamcity.plugins.unrealengine.agent.commandlets.CommandletWorkflowCreator
 import com.jetbrains.teamcity.plugins.unrealengine.common.GenericError
@@ -43,7 +42,7 @@ class CommandletWorkflowCreatorTests {
                         editor(any())
                     }
                 }
-            } returns UnrealTool("/foo/bar", UnrealToolType.Editor)
+            } returns UnrealTool("/foo/bar")
         }
 
         with(environment) {

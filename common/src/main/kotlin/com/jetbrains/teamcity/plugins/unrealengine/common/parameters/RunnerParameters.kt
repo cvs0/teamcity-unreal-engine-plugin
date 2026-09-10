@@ -1,7 +1,16 @@
 package com.jetbrains.teamcity.plugins.unrealengine.common.parameters
 
-import com.jetbrains.teamcity.plugins.unrealengine.common.escapeHTML
 import jetbrains.buildServer.util.StringUtil
+
+fun parseCommandLineArguments(
+    runnerParameters: Map<String, String>,
+    parameterName: String,
+): List<String> =
+    runnerParameters[parameterName]?.let { argumentString ->
+        StringUtil
+            .splitCommandArgumentsAndUnquote(argumentString)
+            .filter { !it.isNullOrBlank() }
+    } ?: emptyList()
 
 interface RunnerParameter {
     val name: String
@@ -22,8 +31,6 @@ abstract class SelectParameter : RunnerParameter {
     abstract val options: List<SelectOption>
 
     val optionNamesAsJsArray by lazy { "[${options.map { it.name }.joinToString(separator = ",") { "'$it'" }}]" }
-
-    fun escapeHTML(value: String) = value.escapeHTML()
 
     fun getOptionDisplayName(value: String?) = options.find { it.name == value }?.displayName.orEmpty()
 }
@@ -74,10 +81,5 @@ object AdditionalArgumentsParameter : TextInputParameter {
     override val expandable = true
     override val advanced = true
 
-    fun parse(runnerParameters: Map<String, String>): List<String> =
-        runnerParameters[name]?.let { argumentString ->
-            StringUtil
-                .splitCommandArgumentsAndUnquote(argumentString)
-                .filter { !it.isNullOrBlank() }
-        } ?: emptyList()
+    fun parse(runnerParameters: Map<String, String>): List<String> = parseCommandLineArguments(runnerParameters, name)
 }

@@ -1,7 +1,7 @@
 package com.jetbrains.teamcity.plugins.framework.resource.location
 
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.raise
 import java.io.Reader
 
 context(_: Raise<ResourceLocationResult.Error>)

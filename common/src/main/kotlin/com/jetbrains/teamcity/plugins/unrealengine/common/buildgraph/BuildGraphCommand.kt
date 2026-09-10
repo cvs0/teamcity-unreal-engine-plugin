@@ -2,7 +2,7 @@ package com.jetbrains.teamcity.plugins.unrealengine.common.buildgraph
 
 import arrow.core.NonEmptyList
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.zipOrAccumulate
+import arrow.core.raise.context.zipOrAccumulate
 import com.jetbrains.teamcity.plugins.unrealengine.common.CommandExecutionContext
 import com.jetbrains.teamcity.plugins.unrealengine.common.GenericError
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
@@ -36,7 +36,7 @@ data class BuildGraphCommand(
             }
     }
 
-    context(_: Raise<GenericError>, context: CommandExecutionContext)
+    context(raise: Raise<GenericError>, context: CommandExecutionContext)
     override fun toArguments() =
         buildList {
             add("BuildGraph")

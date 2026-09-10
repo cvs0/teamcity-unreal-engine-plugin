@@ -8,11 +8,17 @@ import com.jetbrains.teamcity.plugins.unrealengine.common.buildgraph.BuildGraphM
 import com.jetbrains.teamcity.plugins.unrealengine.common.buildgraph.BuildGraphModeParameter
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.UnrealCommandTypeParameter
 import jetbrains.buildServer.serverSide.BuildPromotion
+import jetbrains.buildServer.serverSide.BuildRevision
 import jetbrains.buildServer.serverSide.BuildTypeSettings
 import jetbrains.buildServer.serverSide.SBuildRunnerDescriptor
+import jetbrains.buildServer.serverSide.ServerResponsibility
 import jetbrains.buildServer.serverSide.dependency.DependencyOptions
 import jetbrains.buildServer.util.DependencyOptionSupportImpl
 import jetbrains.buildServer.virtualConfiguration.generator.VirtualPromotionGeneratorFactory
+
+fun ServerResponsibility.isMainNode() = canManageBuilds()
+
+fun BuildRevision.getPerforceChangelistNumber() = revision.splitToSequence("|").lastOrNull()?.toLongOrNull()
 
 fun SBuildRunnerDescriptor.isDistributedBuildGraph() =
     either {

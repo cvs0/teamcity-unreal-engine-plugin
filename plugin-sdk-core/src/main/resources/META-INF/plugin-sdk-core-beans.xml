@@ -7,5 +7,5 @@
     <bean id="primaryAgentParametersSupplier" class="com.jetbrains.teamcity.plugins.framework.agent.PrimaryAgentParametersSupplier" />
     <bean id="environment" class="com.jetbrains.teamcity.plugins.framework.common.OperatingSystemEnvironment"/>
     <bean id="resourceLocator" class="com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocator"/>
-    <bean id="resourceLocationContext" class="com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocationContext"/>
+    <bean id="resourceLocationContext" class="com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocationContextImpl"/>
 </beans>

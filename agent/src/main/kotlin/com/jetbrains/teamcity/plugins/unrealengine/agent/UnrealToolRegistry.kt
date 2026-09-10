@@ -10,14 +10,8 @@ import com.jetbrains.teamcity.plugins.unrealengine.common.UnrealPluginLoggers
 import com.jetbrains.teamcity.plugins.unrealengine.common.commandlets.EditorExecutableParameter
 import com.jetbrains.teamcity.plugins.unrealengine.common.raise
 
-enum class UnrealToolType {
-    AutomationTool,
-    Editor,
-}
-
 data class UnrealTool(
     val executablePath: String,
-    val type: UnrealToolType,
 )
 
 class UnrealToolRegistry(
@@ -33,10 +27,7 @@ class UnrealToolRegistry(
     suspend fun automationTool(parameters: Map<String, String>): UnrealTool {
         val engine = engineProvider.findEngine(parameters)
 
-        return UnrealTool(
-            getAutomationToolFullPath(engine),
-            UnrealToolType.AutomationTool,
-        )
+        return UnrealTool(getAutomationToolFullPath(engine))
     }
 
     context(_: Raise<GenericError>, context: CommandExecutionContext)
@@ -45,10 +36,7 @@ class UnrealToolRegistry(
 
         val executable = EditorExecutableParameter.parse(parameters)
 
-        return UnrealTool(
-            getEditorFullPath(engine, executable?.value),
-            UnrealToolType.Editor,
-        )
+        return UnrealTool(getEditorFullPath(engine, executable?.value))
     }
 
     context(context: CommandExecutionContext)

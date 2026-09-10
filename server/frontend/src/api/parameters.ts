@@ -2,8 +2,6 @@ import {utils} from "@jetbrains/teamcity-api";
 
 export type ParameterAutocompletionResponseItem = {
     value: string
-    label: string
-    meta: string
     selectable: boolean
 }
 

@@ -64,11 +64,12 @@ teamcity {
         baseHomeDir = "teamcity/environments"
         baseDataDir = "teamcity/data"
 
-        create(teamcity.version) {
-            version = teamcity.version
-            homeDir = "${environments.baseHomeDir}/${teamcity.version}"
+        // Download TeamCity 2026.2 (build 238924); API version matches the published 2026.2 line.
+        val teamcityDist = libs.versions.teamcity.dist.get()
+        create(teamcityDist) {
+            version = teamcityDist
+            homeDir = "${environments.baseHomeDir}/$teamcityDist"
         }
-
     }
 }
 
@@ -142,10 +143,12 @@ tasks.register("getLatestChangelogVersion") {
     print(changelog.getLatest().version)
 }
 
-val unpackCommitStatusPublisher = tasks.register<Copy>("unpackCommitStatusPublisher") {
-    dependsOn("install${teamcity.version}")
+val teamcityDist = libs.versions.teamcity.dist.get()
 
-    from(zipTree("${teamcity.environments.baseHomeDir}/${teamcity.version}/webapps/ROOT/WEB-INF/plugins/commit-status-publisher.zip")) {
+val unpackCommitStatusPublisher = tasks.register<Copy>("unpackCommitStatusPublisher") {
+    dependsOn("install$teamcityDist")
+
+    from(zipTree("${teamcity.environments.baseHomeDir}/$teamcityDist/webapps/ROOT/WEB-INF/plugins/commit-status-publisher.zip")) {
         include("server/commit-status-publisher-*")
         eachFile {
             relativePath = RelativePath(true, relativePath.segments.last())
@@ -169,7 +172,6 @@ dependencies {
         // rely on the version provided by TeamCity. Otherwise, we get a LinkageError because of "ILoggerFactory"
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-    implementation(project(":plugin-sdk-core"))
     implementation(project(":common"))
     provided("org.jetbrains.teamcity.internal:server:${teamcity.version}")
 
@@ -193,8 +195,6 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.mockk)
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.ktor.client.mock)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }

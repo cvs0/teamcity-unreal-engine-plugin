@@ -2,8 +2,8 @@ package com.jetbrains.teamcity.plugins.framework.resource.location
 
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
-import com.jetbrains.teamcity.plugins.framework.common.ensure
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.raise
 import java.io.Reader
 import java.nio.file.Path
 import kotlin.io.path.exists

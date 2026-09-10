@@ -6,7 +6,6 @@ interface Environment {
     val osType: OSType
     val homeDirectory: Path
     val programDataDirectory: Path
-    fun getEnvironmentVariable(name: String): String?
 }
 
 class OperatingSystemEnvironment : Environment {
@@ -55,8 +54,6 @@ class OperatingSystemEnvironment : Environment {
 
             return Path.of(System.getenv("ProgramData"))
         }
-
-    override fun getEnvironmentVariable(name: String): String? = System.getenv(name)
 }
 
 enum class OSType {

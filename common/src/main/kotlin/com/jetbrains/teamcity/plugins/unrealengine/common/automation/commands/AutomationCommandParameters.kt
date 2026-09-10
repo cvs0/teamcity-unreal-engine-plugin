@@ -1,10 +1,10 @@
 package com.jetbrains.teamcity.plugins.unrealengine.common.automation.commands
 
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.raise
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.TextInputParameter
-import jetbrains.buildServer.util.StringUtil
+import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.parseCommandLineArguments
 
 object AutomationCommandNameParameter : TextInputParameter {
     override val name = "automation-command-name-parameter"
@@ -38,10 +38,5 @@ object AutomationCommandArgumentsParameter : TextInputParameter {
     override val expandable = true
     override val advanced = false
 
-    fun parse(runnerParameters: Map<String, String>): List<String> =
-        runnerParameters[name]?.let { argumentString ->
-            StringUtil
-                .splitCommandArgumentsAndUnquote(argumentString)
-                .filter { !it.isNullOrBlank() }
-        } ?: emptyList()
+    fun parse(runnerParameters: Map<String, String>): List<String> = parseCommandLineArguments(runnerParameters, name)
 }

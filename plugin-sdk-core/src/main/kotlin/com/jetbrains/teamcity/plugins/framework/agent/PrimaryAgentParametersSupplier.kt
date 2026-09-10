@@ -10,46 +10,37 @@ import kotlinx.coroutines.runBlocking
 class PrimaryAgentParametersSupplier(
     providers: List<AgentParametersProvider>,
 ) : AgentParametersSupplier {
-
     companion object {
         private val logger: Logger = TeamCityLoggers.get<PrimaryAgentParametersSupplier>()
     }
 
-    private val parameters: List<TeamCityParameter> by lazy {
+    private val discoveredParameters: Map<String, String> by lazy {
         logger.info("Retrieving agent parameters")
 
-        val result = runBlocking {
-            providers.map {
-                async {
-                    try {
-                        it.provide()
-                    } catch (e: Throwable) {
-                        logger.error("An error occurred during parameters retrieval", e)
-                        emptyList()
-                    }
-                }
+        val result =
+            runBlocking {
+                providers
+                    .map {
+                        async {
+                            try {
+                                it.provide()
+                            } catch (e: Throwable) {
+                                logger.error("An error occurred during parameters retrieval", e)
+                                emptyList()
+                            }
+                        }
+                    }.awaitAll()
+                    .flatten()
+                    .associate { it.key to it.value }
             }
-                .awaitAll()
-                .flatten()
-        }
 
         logger.info("Agent parameters retrieval finished. Number of retrieved parameters: ${result.size}")
-
         result
     }
 
-    override fun getParameters(): MutableMap<String, String> = parameters
-        .filter {it.type == TeamCityParameter.Type.ConfigurationParameter }
-        .associate { it.key to it.value }
-        .toMutableMap()
+    override fun getParameters(): MutableMap<String, String> = discoveredParameters.toMutableMap()
 
-    override fun getEnvironmentVariables(): MutableMap<String, String> = parameters
-        .filter {it.type == TeamCityParameter.Type.EnvironmentVariable }
-        .associate { it.key to it.value }
-        .toMutableMap()
+    override fun getEnvironmentVariables(): MutableMap<String, String> = mutableMapOf()
 
-    override fun getSystemProperties(): MutableMap<String, String> = parameters
-        .filter {it.type == TeamCityParameter.Type.SystemProperty }
-        .associate { it.key to it.value }
-        .toMutableMap()
+    override fun getSystemProperties(): MutableMap<String, String> = mutableMapOf()
 }

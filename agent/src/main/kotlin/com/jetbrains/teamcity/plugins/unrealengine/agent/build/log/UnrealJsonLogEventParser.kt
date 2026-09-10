@@ -24,7 +24,7 @@ enum class LogLevel {
     None,
 }
 
-object InstantSerializer : KSerializer<Instant> {
+private object InstantSerializer : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.STRING)
 
     override fun serialize(

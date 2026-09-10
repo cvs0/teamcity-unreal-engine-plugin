@@ -19,7 +19,6 @@ teamcity {
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.serialization.json)
-    implementation(libs.kotlin.serialization.properties)
     implementation(libs.arrow.core)
     implementation(libs.kotlin.coroutines.core)
     implementation(project(":plugin-sdk-core"))
@@ -38,5 +37,4 @@ dependencies {
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.mockk)
     testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }

@@ -2,7 +2,6 @@ package com.jetbrains.teamcity.plugins.unrealengine.agent.build.log
 
 import com.jetbrains.teamcity.plugins.framework.common.TeamCityLoggers
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealBuildContext
-import com.jetbrains.teamcity.plugins.unrealengine.agent.buildcookrun.BuildCookRunWorkflowCreator
 import com.jetbrains.teamcity.plugins.unrealengine.common.UnrealPluginLoggers
 import jetbrains.buildServer.BuildProblemData
 import jetbrains.buildServer.agent.BuildProgressLogger
@@ -30,7 +29,7 @@ class UnrealEngineProcessListener(
     private val reportErrorsAsBuildProblems: Boolean = true,
 ) : ProcessListenerAdapter() {
     companion object {
-        private val agentLogger = UnrealPluginLoggers.get<BuildCookRunWorkflowCreator>()
+        private val agentLogger = UnrealPluginLoggers.get<UnrealEngineProcessListener>()
         private val buildStdOutLogger = TeamCityLoggers.buildStdOut()
     }
 

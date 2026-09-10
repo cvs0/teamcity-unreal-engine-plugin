@@ -9,7 +9,6 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.kotlin.serialization.json)
     implementation(libs.kotlin.serialization.properties)
-    implementation(project(":plugin-sdk-core"))
 
     constraints {
         implementation(libs.constraint.transitive.icu4j) {
@@ -21,6 +20,4 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.mockk)
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.kotest.assertions.core)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }

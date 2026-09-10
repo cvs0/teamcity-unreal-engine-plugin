@@ -6,7 +6,6 @@ import arrow.core.raise.either
 import arrow.core.raise.forEachAccumulating
 import com.jetbrains.teamcity.plugins.unrealengine.common.Error
 import com.jetbrains.teamcity.plugins.unrealengine.common.GenericError
-import com.jetbrains.teamcity.plugins.unrealengine.common.JsonEncoder
 import com.jetbrains.teamcity.plugins.unrealengine.common.UnrealPluginLoggers
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.AgentBuildEvent
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.AgentBuildEventConverter
@@ -32,9 +31,8 @@ class AgentBuildEventReceiver(
 ) : ServiceMessageTranslator {
     companion object {
         private val logger = UnrealPluginLoggers.get<AgentBuildEventReceiver>()
+        private val json = AgentBuildEventConverter.json
     }
-
-    private val json = JsonEncoder.instance
 
     init {
         multiNodesEvents.subscribe(UnrealMultiNodeAgentBuildEvent.NAME, ::consumeUnrealMultiNodeEvent)

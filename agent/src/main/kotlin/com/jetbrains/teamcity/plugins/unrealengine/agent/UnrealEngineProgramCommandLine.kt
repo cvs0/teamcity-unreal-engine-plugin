@@ -2,7 +2,6 @@ package com.jetbrains.teamcity.plugins.unrealengine.agent
 
 import com.jetbrains.teamcity.plugins.framework.common.Environment
 import com.jetbrains.teamcity.plugins.framework.common.OSType
-import com.jetbrains.teamcity.plugins.unrealengine.agent.build.log.StructuredLogging
 import jetbrains.buildServer.agent.runner.ProgramCommandLine
 import jetbrains.buildServer.agent.runner.SimpleProgramCommandLine
 import jetbrains.buildServer.util.StringUtil
@@ -13,9 +12,11 @@ class UnrealEngineProgramCommandLine
         private val commandLine: ProgramCommandLine,
     ) : ProgramCommandLine by commandLine {
         companion object {
+            private const val STRUCTURED_LOGGING_ENV_VAR = "UE_LOG_JSON_TO_STDOUT"
+
             private val defaultEnvironmentVariables =
                 mapOf(
-                    StructuredLogging.STRUCTURED_LOGGING_ENV_VAR to "1",
+                    STRUCTURED_LOGGING_ENV_VAR to "1",
                 )
         }
 

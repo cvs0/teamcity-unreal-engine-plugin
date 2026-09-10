@@ -14,14 +14,6 @@
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.UnrealEngineRunnerPropertiesValidator"/>
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.UnrealEngineRunnerParametersProvider"/>
 
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.UnrealRunnerComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.UnrealRunnerComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.EngineComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.BuildConfigurationComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.CookComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.RunComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.BuildGraphComponent"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.ui.BuildCookRunComponent"/>
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.runner.RunnerDescriptionGenerator"/>
 
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.buildgraph.BuildGraphDistributionConfigurer"/>
@@ -40,7 +32,6 @@
 
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs.UgsCommitStatusPublisherSettings"/>
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs.UgsParametersParser"/>
-    <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs.UgsComponent"/>
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs.UgsMetadataServerClient" factory-method="createInstance"/>
 
     <bean class="com.jetbrains.teamcity.plugins.unrealengine.server.build.agent.AgentBuildEventReceiver"/>

@@ -2,7 +2,7 @@ package com.jetbrains.teamcity.plugins.framework.resource.location
 
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.raise
 import kotlinx.serialization.json.Json
 import java.io.Reader
 

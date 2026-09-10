@@ -3,9 +3,9 @@ package com.jetbrains.teamcity.plugins.unrealengine.server.build.status.ugs
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.raise.Raise
+import arrow.core.raise.context.ensure
 import arrow.core.raise.either
 import arrow.core.raise.zipOrAccumulate
-import com.jetbrains.teamcity.plugins.framework.common.ensure
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.TextInputParameter
 import com.jetbrains.teamcity.plugins.unrealengine.common.ugs.UgsMetadataServerUrl

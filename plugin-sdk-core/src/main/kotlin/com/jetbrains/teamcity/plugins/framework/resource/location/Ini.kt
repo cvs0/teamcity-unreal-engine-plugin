@@ -1,9 +1,8 @@
 package com.jetbrains.teamcity.plugins.framework.resource.location
 
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.ensure
-import com.jetbrains.teamcity.plugins.framework.common.raise
-import org.apache.commons.configuration2.INIConfiguration
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.raise
 import java.io.Reader
 
 data class IniProperty(
@@ -12,27 +11,50 @@ data class IniProperty(
 )
 
 context(_: Raise<ResourceLocationResult.Error>)
-internal fun Reader.parseIni(sectionName: String? = null): List<IniProperty> {
-    val config = INIConfiguration()
+internal fun Reader.parseIni(sectionName: String): List<IniProperty> {
+    val properties = mutableListOf<IniProperty>()
+    var currentSection: String? = null
+    var foundSection = false
 
     try {
-        config.read(this)
+        for (rawLine in readLines()) {
+            val line = rawLine.trim()
+            if (line.isEmpty() || line.startsWith(';') || line.startsWith('#')) {
+                continue
+            }
+
+            if (line.startsWith('[') && line.endsWith(']')) {
+                currentSection = line.substring(1, line.length - 1)
+                if (currentSection == sectionName) {
+                    foundSection = true
+                }
+                continue
+            }
+
+            if (currentSection != sectionName) {
+                continue
+            }
+
+            val separator = line.indexOf('=')
+            ensure(separator > 0) {
+                raise(ResourceLocationResult.Error("Malformed ini entry: $line"))
+            }
+
+            properties +=
+                IniProperty(
+                    key = line.substring(0, separator).trim(),
+                    value = line.substring(separator + 1).trim(),
+                )
+        }
     } catch (e: Throwable) {
         raise(ResourceLocationResult.Error("Unknown error occurred during ini config read", e))
     } finally {
         close()
     }
 
-    ensure(config.sections.contains(sectionName)) { raise(ResourceLocationResult.Error("Specified section $sectionName does not exist")) }
+    ensure(foundSection) {
+        raise(ResourceLocationResult.Error("Specified section $sectionName does not exist"))
+    }
 
-    val targetSection = config.getSection(sectionName)
-    return targetSection
-        .keys
-        .asSequence()
-        .map {
-            IniProperty(parseIniKey(it), targetSection.getProperty(it).toString())
-        }
-        .toList()
+    return properties
 }
-
-private fun parseIniKey(key: String): String = key.replace("..", ".").removePrefix("{").removeSuffix("}")

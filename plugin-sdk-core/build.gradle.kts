@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    alias(pluginSdkCoreLibs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "com.jetbrains.teamcity.plugins.plugin-sdk-core"
@@ -14,30 +14,30 @@ repositories {
 }
 
 dependencies {
-    compileOnly(pluginSdkCoreLibs.teamcity.agent.api)
-    compileOnly(pluginSdkCoreLibs.teamcity.common.api)
+    compileOnly(libs.teamcity.agent.api)
+    compileOnly(libs.teamcity.common.api)
 
-    implementation(pluginSdkCoreLibs.kotlin.stdlib)
-    implementation(pluginSdkCoreLibs.kotlin.serialization.json)
-    implementation(pluginSdkCoreLibs.arrow.core)
-    implementation(pluginSdkCoreLibs.kotlin.coroutines.core)
-    implementation(pluginSdkCoreLibs.commons.configuration)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.arrow.core)
+    implementation(libs.kotlin.coroutines.core)
 
     constraints {
-        implementation(pluginSdkCoreLibs.constraint.transitive.icu4j) {
+        implementation(libs.constraint.transitive.icu4j) {
             because("previous versions have faulty jar files which cause problems during incremental compilation (which is enabled by default since Kotlin 1.8.20)")
         }
     }
 
     testImplementation(kotlin("test"))
 
-    testImplementation(pluginSdkCoreLibs.teamcity.tests.support)
-    testImplementation(pluginSdkCoreLibs.teamcity.agent.api)
-    testImplementation(pluginSdkCoreLibs.teamcity.common.api)
-    testImplementation(pluginSdkCoreLibs.mockk)
-    testImplementation(pluginSdkCoreLibs.junit.jupiter)
-    testRuntimeOnly(pluginSdkCoreLibs.junit.platform.launcher)
-    testImplementation(pluginSdkCoreLibs.kotlin.coroutines.test)
+    testImplementation(libs.teamcity.agent.api)
+    testImplementation(libs.teamcity.common.api)
+    testImplementation(libs.mockk)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.kotlin.coroutines.test)
 }
 
 kotlin {

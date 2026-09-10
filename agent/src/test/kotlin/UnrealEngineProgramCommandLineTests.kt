@@ -2,7 +2,6 @@
 import com.jetbrains.teamcity.plugins.framework.common.Environment
 import com.jetbrains.teamcity.plugins.framework.common.OSType
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealEngineProgramCommandLine
-import com.jetbrains.teamcity.plugins.unrealengine.agent.build.log.StructuredLogging
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
@@ -16,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class UnrealEngineProgramCommandLineTests {
     private val environmentMock = mockk<Environment>()
+    private val structuredLoggingEnvVar = "UE_LOG_JSON_TO_STDOUT"
 
     @BeforeEach
     fun init() {
@@ -83,7 +83,7 @@ class UnrealEngineProgramCommandLineTests {
         val commandLine = createCommandLine()
 
         // assert
-        commandLine.environment shouldContain (StructuredLogging.STRUCTURED_LOGGING_ENV_VAR to "1")
+        commandLine.environment shouldContain (structuredLoggingEnvVar to "1")
     }
 
     @ParameterizedTest
@@ -94,12 +94,12 @@ class UnrealEngineProgramCommandLineTests {
             createCommandLine(
                 environmentVariables =
                     mapOf(
-                        StructuredLogging.STRUCTURED_LOGGING_ENV_VAR to value,
+                        structuredLoggingEnvVar to value,
                     ),
             )
 
         // assert
-        commandLine.environment shouldContain (StructuredLogging.STRUCTURED_LOGGING_ENV_VAR to value)
+        commandLine.environment shouldContain (structuredLoggingEnvVar to value)
     }
 
     private fun createCommandLine(

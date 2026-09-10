@@ -1,10 +1,9 @@
 package com.jetbrains.teamcity.plugins.unrealengine.common.automation.tests
 
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.raise
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
 import com.jetbrains.teamcity.plugins.unrealengine.common.automation.tests.ExecCommand.*
-import com.jetbrains.teamcity.plugins.unrealengine.common.enumValueOfOrNull
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.CheckboxParameter
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.RunnerParameter
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.SelectOption
@@ -86,7 +85,8 @@ object AutomationTestsFilterParameter : SelectParameter() {
     override val options: List<SelectOption>
         get() = RunFilterType.entries.map { SelectOption(it.name) }
 
-    fun parse(runnerParameters: Map<String, String>): RunFilterType? = runnerParameters[name]?.let { enumValueOfOrNull<RunFilterType>(it) }
+    fun parse(runnerParameters: Map<String, String>): RunFilterType? =
+        runnerParameters[name]?.let { runCatching { enumValueOf<RunFilterType>(it) }.getOrNull() }
 }
 
 object AutomationTestsParameter : RunnerParameter {
