@@ -8,7 +8,6 @@ fun createTestCommandExecutionContext() =
 
 fun setupTestCommandExecutionContext(context: CommandExecutionContext) {
     every { context.workingDirectory } returns "foo"
-    every { context.agentTempDirectory } returns "bar"
     every { context.fileExists(any()) } answers { true }
     every { context.isAbsolute(any()) } answers { true }
     every { context.resolvePath(any()) } answers { "" }

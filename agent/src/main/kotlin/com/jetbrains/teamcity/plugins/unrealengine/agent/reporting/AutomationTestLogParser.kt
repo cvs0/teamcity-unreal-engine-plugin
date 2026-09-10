@@ -12,19 +12,13 @@ enum class TestResult {
 data class TestStartedInfo(
     val name: String,
     val fullName: String,
-) {
-    val formattedName: String
-        get() = TeamCityTestNameFormatter.format(name, fullName)
-}
+)
 
 data class TestCompletedInfo(
     val name: String,
     val fullName: String,
     val result: TestResult,
-) {
-    val formattedName: String
-        get() = TeamCityTestNameFormatter.format(name, fullName)
-}
+)
 
 // Same regex approach to report tests is used in Rider (UnrealTestUnitTestRunner.cs)
 // and in Unreal Engine Gauntlet (Gauntlet.AutomationLogParser.cs)

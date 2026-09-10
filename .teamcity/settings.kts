@@ -9,7 +9,7 @@ import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.version
 
-version = "2026.1"
+version = "2026.2"
 
 project {
     buildType(ReleaseBuildConfiguration)

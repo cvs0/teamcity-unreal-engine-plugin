@@ -4,11 +4,27 @@
 # Ignore Gradle build output directory
 build
 !**/src/**/build
+**/out/
 
+# IDE / compiler caches
 .idea
+.kotlin
+*.iml
+
+# Accidental compile output copied next to sources (Eclipse/IDEA)
+**/bin/
+
+# Local scratch / log dumps
+build-output*.txt
+*.log
+
+# Frontend
+server/frontend/node_modules/
+server/frontend/dist/
 
 # OS specific files
 *.DS_Store
+Thumbs.db
 
 # locally installed TeamCity environments
 /server/teamcity/

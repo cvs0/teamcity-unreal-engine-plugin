@@ -6,15 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
-
-- Updated the plugin build to target TeamCity 2026.1 and Java 21
-- Updated Kotlin, Ktor, Arrow, coroutines, JUnit, MockK, Gradle, and other build dependencies
-- Fixed Gradle 10 deprecation in the frontend build task and added an npm fallback when Docker is unavailable
-
 ### Added
 
-### Fixed
+- Distributed BuildGraph now passes `-CleanNode` with `-SingleNode` so UAT clears locally cached node manifests before pulling from shared storage. This avoids silent skipped downloads on agents with persistent workspaces ([upstream #42](https://github.com/JetBrains/teamcity-unreal-engine-plugin/pull/42)).
+
+### Changed
+
+- Updated the plugin build to target TeamCity 2026.2 (build 238924) and Java 21
+- Removed `IOGuard.allowNetworkCall` wrappers around UGS metadata requests; TeamCity 2026.2 no longer restricts secondary-node network I/O (TW-103136)
+- Updated Kotlin to 2.3.21, plus serialization, Ktor, Arrow, JUnit, Kotest, MockK, Spotless, Gradle, frontend, and other build dependencies
+- Replaced the local Arrow Raise context shim with `arrow.core.raise.context`
+- Fixed Gradle 10 deprecation in the frontend build task and added an npm fallback when Docker is unavailable
 
 ## 1.3.4 - 2025-08-14
 

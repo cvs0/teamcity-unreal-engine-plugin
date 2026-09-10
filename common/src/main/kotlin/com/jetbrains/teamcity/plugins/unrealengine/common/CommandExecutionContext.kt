@@ -1,8 +1,7 @@
 package com.jetbrains.teamcity.plugins.unrealengine.common
 
-interface FileSystemContext {
+interface CommandExecutionContext {
     val workingDirectory: String
-    val agentTempDirectory: String
 
     fun resolvePath(
         root: String,
@@ -17,8 +16,6 @@ interface FileSystemContext {
         root: String,
         vararg parts: String,
     ): String
-}
 
-interface CommandExecutionContext : FileSystemContext {
     fun resolveUserPath(path: String): String
 }

@@ -18,7 +18,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 
@@ -163,10 +162,4 @@ class UgsMetadataServerClient(
 private data class LatestData(
     @JsonNames("Version")
     val version: Int? = null,
-    @SerialName("LastEventId")
-    val lastEventId: Long = 0,
-    @SerialName("LastCommentId")
-    val lastCommentId: Long = 0,
-    @SerialName("LastBuildId")
-    val lastBuildId: Long = 0,
 )

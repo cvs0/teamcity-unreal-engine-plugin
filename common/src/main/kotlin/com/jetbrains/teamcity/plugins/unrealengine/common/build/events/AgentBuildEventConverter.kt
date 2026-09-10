@@ -4,6 +4,7 @@ import arrow.core.raise.Raise
 import com.jetbrains.teamcity.plugins.unrealengine.common.Error
 import com.jetbrains.teamcity.plugins.unrealengine.common.raise
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
@@ -16,7 +17,7 @@ class AgentBuildEventConverter {
     companion object {
         const val SERVICE_MESSAGE_NAME = "unreal-engine.build.event"
 
-        val serializersModule =
+        private val eventSerializersModule =
             SerializersModule {
                 polymorphic(AgentBuildEvent::class) {
                     subclass(AgentBuildEvent.BuildStepStarted::class)
@@ -24,9 +25,15 @@ class AgentBuildEventConverter {
                     subclass(AgentBuildEvent.BuildStepInterrupted::class)
                 }
             }
+
+        val json =
+            Json {
+                ignoreUnknownKeys = true
+                serializersModule = eventSerializersModule
+            }
     }
 
-    private val properties = Properties(serializersModule)
+    private val properties = Properties(eventSerializersModule)
 
     @OptIn(ExperimentalSerializationApi::class)
     context(_: Raise<Error>)

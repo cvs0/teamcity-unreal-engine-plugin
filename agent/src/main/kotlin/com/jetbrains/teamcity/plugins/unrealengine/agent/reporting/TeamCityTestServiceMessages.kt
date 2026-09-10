@@ -6,7 +6,7 @@ import jetbrains.buildServer.messages.serviceMessages.TestIgnored
 import jetbrains.buildServer.messages.serviceMessages.TestStarted
 
 // duration calculated by TeamCity based on TestStarted and TestFinished service messages timestamp
-const val DURATION_CALCULATED = -1
+private const val DURATION_CALCULATED = -1
 
 fun TestStartedInfo.asServiceMessages() =
     sequence {

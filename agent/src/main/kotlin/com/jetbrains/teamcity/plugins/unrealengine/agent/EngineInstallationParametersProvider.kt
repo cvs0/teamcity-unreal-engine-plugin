@@ -131,7 +131,6 @@ class EngineInstallationParametersProvider(
                 TeamCityParameter(
                     "${UnrealEngineRunner.AGENT_PARAMETER_NAME_PREFIX}.${it.identifier}.path",
                     it.location,
-                    TeamCityParameter.Type.ConfigurationParameter,
                 )
             }
     }

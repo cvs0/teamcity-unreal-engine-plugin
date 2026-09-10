@@ -3,17 +3,17 @@ package com.jetbrains.teamcity.plugins.framework.resource.location.windows.regis
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import com.jetbrains.teamcity.plugins.framework.common.CommandLineRunner
-import com.jetbrains.teamcity.plugins.framework.common.ensure
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.raise
 import com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocationResult
-import com.jetbrains.teamcity.plugins.framework.resource.location.queries.WindowsResourceLocationContext
+import com.jetbrains.teamcity.plugins.framework.resource.location.queries.ResourceLocationContext
 
 interface WindowsRegistrySearchFilter {
     fun accept(key: WindowsRegistryEntry.Key): Boolean
     fun accept(value: WindowsRegistryEntry.Value): Boolean
 }
 
-context(_: Raise<ResourceLocationResult.Error>, context: WindowsResourceLocationContext)
+context(_: Raise<ResourceLocationResult.Error>, context: ResourceLocationContext)
 internal fun windowsRegistry(path: String, filter: WindowsRegistrySearchFilter): List<WindowsRegistryEntry> {
     val command = WindowsRegistryCommands.query(path)
     var registrySearchResult: CommandLineRunner.RunResult? = null
@@ -27,7 +27,7 @@ internal fun windowsRegistry(path: String, filter: WindowsRegistrySearchFilter):
         ResourceLocationResult.Error("Unknown result of a Windows registry lookup command. Perhaps it timed out")
     }
 
-    return registrySearchResult!!.run {
+    return registrySearchResult.run {
         ensure(exitCode == 0) {
             raise(ResourceLocationResult.Error("Windows registry lookup ended with non-zero exit code"))
         }

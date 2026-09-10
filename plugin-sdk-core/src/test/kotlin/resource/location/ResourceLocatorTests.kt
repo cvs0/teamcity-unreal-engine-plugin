@@ -4,9 +4,9 @@ import com.jetbrains.teamcity.plugins.framework.common.CommandLineRunner
 import com.jetbrains.teamcity.plugins.framework.common.Environment
 import com.jetbrains.teamcity.plugins.framework.common.OSType
 import com.jetbrains.teamcity.plugins.framework.resource.location.QueryBuilder
-import com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocationContext
 import com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocationResult
 import com.jetbrains.teamcity.plugins.framework.resource.location.ResourceLocator
+import com.jetbrains.teamcity.plugins.framework.resource.location.queries.ResourceLocationContext
 import com.jetbrains.teamcity.plugins.framework.resource.location.queries.map
 import io.mockk.every
 import io.mockk.mockk
@@ -59,7 +59,6 @@ internal class ResourceLocatorTests {
         override val osType = os
         override val homeDirectory = Path.of("")
         override val programDataDirectory = Path.of("")
-        override fun getEnvironmentVariable(name: String) = null
     }
 
     private fun createLocator(

@@ -42,7 +42,7 @@ class CommandletLogEventHandler(
     }
 
     companion object {
-        const val WARNING_COUNT_KEY = "unreal.commandlet.warnings"
-        const val ERROR_COUNT_KEY = "unreal.commandlet.errors"
+        private const val WARNING_COUNT_KEY = "unreal.commandlet.warnings"
+        private const val ERROR_COUNT_KEY = "unreal.commandlet.errors"
     }
 }

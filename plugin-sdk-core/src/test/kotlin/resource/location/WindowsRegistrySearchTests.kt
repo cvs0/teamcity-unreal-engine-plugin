@@ -3,7 +3,7 @@ package resource.location
 import arrow.core.raise.either
 import com.intellij.execution.ExecutionException
 import com.jetbrains.teamcity.plugins.framework.common.CommandLineRunner
-import com.jetbrains.teamcity.plugins.framework.resource.location.queries.WindowsResourceLocationContext
+import com.jetbrains.teamcity.plugins.framework.resource.location.queries.ResourceLocationContext
 import com.jetbrains.teamcity.plugins.framework.resource.location.windows.registry.WindowsRegistryEntry
 import com.jetbrains.teamcity.plugins.framework.resource.location.windows.registry.WindowsRegistrySearchFilter
 import com.jetbrains.teamcity.plugins.framework.resource.location.windows.registry.WindowsRegistryValueType
@@ -19,10 +19,12 @@ import kotlin.test.assertNotNull
 
 class WindowsRegistrySearchTests {
     private val commandLineRunnerMock = mockk<CommandLineRunner>()
-    private val defaultContext = object : WindowsResourceLocationContext {
-        override val commandLineRunner = commandLineRunnerMock
-        override fun pathOf(fileName: String) = Path.of(fileName)
-    }
+    private val defaultContext =
+        object : ResourceLocationContext {
+            override val commandLineRunner = commandLineRunnerMock
+
+            override fun pathOf(fileName: String) = Path.of(fileName)
+        }
     private val defaultFilter = object : WindowsRegistrySearchFilter {
         override fun accept(key: WindowsRegistryEntry.Key) = true
         override fun accept(value: WindowsRegistryEntry.Value) = true

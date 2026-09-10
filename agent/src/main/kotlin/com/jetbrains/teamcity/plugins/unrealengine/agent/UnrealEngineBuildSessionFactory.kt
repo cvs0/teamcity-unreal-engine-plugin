@@ -57,7 +57,6 @@ class UnrealEngineBuildSessionFactory(
     private fun createUnrealBuildContext(runnerContext: BuildRunnerContext): UnrealBuildContext =
         object : UnrealBuildContext {
             override val workingDirectory = runnerContext.workingDirectory.canonicalPath
-            override val agentTempDirectory = runnerContext.build.agentTempDirectory.canonicalPath
 
             override fun resolvePath(
                 root: String,

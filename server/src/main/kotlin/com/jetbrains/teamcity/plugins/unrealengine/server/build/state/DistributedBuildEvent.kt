@@ -1,25 +1,14 @@
 package com.jetbrains.teamcity.plugins.unrealengine.server.build.state
 
-import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.StepOutcome
+import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.AgentBuildEvent
 import jetbrains.buildServer.serverSide.SBuild
 
 sealed interface DistributedBuildEvent {
     val build: SBuild
 
-    data class BuildStepInterrupted(
+    data class FromAgent(
         override val build: SBuild,
-        val name: String,
-    ) : DistributedBuildEvent
-
-    data class BuildStepStarted(
-        override val build: SBuild,
-        val name: String,
-    ) : DistributedBuildEvent
-
-    data class BuildStepCompleted(
-        override val build: SBuild,
-        val name: String,
-        val outcome: StepOutcome,
+        val agentEvent: AgentBuildEvent,
     ) : DistributedBuildEvent
 
     data class BuildSkipped(

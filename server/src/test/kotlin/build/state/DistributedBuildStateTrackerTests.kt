@@ -3,6 +3,7 @@ package build.state
 import arrow.core.raise.Raise
 import arrow.core.raise.either
 import com.jetbrains.teamcity.plugins.unrealengine.common.Error
+import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.AgentBuildEvent
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.RunnerInternalParameters
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.StepOutcome
 import com.jetbrains.teamcity.plugins.unrealengine.server.build.DistributedBuild
@@ -213,7 +214,7 @@ class DistributedBuildStateTrackerTests {
                                 ),
                             ),
                         ),
-                    buildEvent = DistributedBuildEvent.BuildStepStarted(eventBuild, "1.1"),
+                    buildEvent = DistributedBuildEvent.FromAgent(eventBuild, AgentBuildEvent.BuildStepStarted("1.1")),
                     expectedUpdate = sequenceOf(BuildStep("1.1", BuildStepState.Running)),
                     expectedStateEvent =
                         DistributedBuildStateChanged.BuildStepStarted(
@@ -235,7 +236,11 @@ class DistributedBuildStateTrackerTests {
                                 ),
                             ),
                         ),
-                    buildEvent = DistributedBuildEvent.BuildStepCompleted(eventBuild, "1.1", StepOutcome.Success),
+                    buildEvent =
+                        DistributedBuildEvent.FromAgent(
+                            eventBuild,
+                            AgentBuildEvent.BuildStepCompleted("1.1", StepOutcome.Success),
+                        ),
                     expectedUpdate = sequenceOf(BuildStep("1.1", BuildStepState.Completed, StepOutcome.Success)),
                     expectedStateEvent =
                         DistributedBuildStateChanged.BuildStepCompleted(
@@ -258,7 +263,11 @@ class DistributedBuildStateTrackerTests {
                                 ),
                             ),
                         ),
-                    buildEvent = DistributedBuildEvent.BuildStepCompleted(eventBuild, "1.1", StepOutcome.Failure),
+                    buildEvent =
+                        DistributedBuildEvent.FromAgent(
+                            eventBuild,
+                            AgentBuildEvent.BuildStepCompleted("1.1", StepOutcome.Failure),
+                        ),
                     expectedUpdate =
                         sequenceOf(
                             BuildStep("1.1", BuildStepState.Completed, StepOutcome.Failure),
@@ -352,7 +361,11 @@ class DistributedBuildStateTrackerTests {
         fun `disposes underlying storage on build completion`() =
             runTest {
                 // arrange
-                val event = DistributedBuildEvent.BuildStepCompleted(eventBuild, eventBuild.buildTypeName, StepOutcome.Success)
+                val event =
+                    DistributedBuildEvent.FromAgent(
+                        eventBuild,
+                        AgentBuildEvent.BuildStepCompleted(eventBuild.buildTypeName, StepOutcome.Success),
+                    )
                 stateStorage withState
                     DistributedBuildState(
                         listOf(

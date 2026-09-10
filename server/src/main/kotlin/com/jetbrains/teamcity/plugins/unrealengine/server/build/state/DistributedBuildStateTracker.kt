@@ -3,11 +3,11 @@ package com.jetbrains.teamcity.plugins.unrealengine.server.build.state
 import arrow.core.raise.Raise
 import com.jetbrains.teamcity.plugins.unrealengine.common.Error
 import com.jetbrains.teamcity.plugins.unrealengine.common.UnrealPluginLoggers
+import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.AgentBuildEvent
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.RunnerInternalParameters
 import com.jetbrains.teamcity.plugins.unrealengine.common.build.events.StepOutcome
 import com.jetbrains.teamcity.plugins.unrealengine.common.ensureNotNull
 import com.jetbrains.teamcity.plugins.unrealengine.server.build.DistributedBuild
-import com.jetbrains.teamcity.plugins.unrealengine.server.build.state.DistributedBuildEvent.*
 import com.jetbrains.teamcity.plugins.unrealengine.server.build.state.DistributedBuildState.BuildStep
 import com.jetbrains.teamcity.plugins.unrealengine.server.build.state.DistributedBuildState.BuildStepState
 import com.jetbrains.teamcity.plugins.unrealengine.server.extensions.activeRunners
@@ -70,10 +70,25 @@ class DistributedBuildStateTracker(
 
         val updatedState =
             when (event) {
-                is BuildStepStarted -> buildStepStarted(parentBuild, event)
-                is BuildStepCompleted -> buildStepFinished(parentBuild, event)
-                is BuildStepInterrupted -> buildStepInterrupted(parentBuild, event)
-                is BuildSkipped -> buildSkipped(parentBuild, event.build)
+                is DistributedBuildEvent.FromAgent -> {
+                    when (val agentEvent = event.agentEvent) {
+                        is AgentBuildEvent.BuildStepStarted -> {
+                            buildStepStarted(parentBuild, agentEvent.name)
+                        }
+
+                        is AgentBuildEvent.BuildStepCompleted -> {
+                            buildStepFinished(parentBuild, event.build, agentEvent.name, agentEvent.outcome)
+                        }
+
+                        is AgentBuildEvent.BuildStepInterrupted -> {
+                            buildStepInterrupted(parentBuild, event.build, agentEvent.name)
+                        }
+                    }
+                }
+
+                is DistributedBuildEvent.BuildSkipped -> {
+                    buildSkipped(parentBuild, event.build)
+                }
             }
 
         if (buildCompleted(updatedState)) {
@@ -84,19 +99,19 @@ class DistributedBuildStateTracker(
     context(_: Raise<Error>)
     private suspend fun buildStepStarted(
         parentBuild: SBuild,
-        event: BuildStepStarted,
+        stepName: String,
     ): DistributedBuildState {
         val updatedState =
             stateStorage.update(
                 parentBuild,
-                sequenceOf(BuildStep(event.name, BuildStepState.Running)),
+                sequenceOf(BuildStep(stepName, BuildStepState.Running)),
             )
 
         eventBus.dispatch(
             DistributedBuildStateChanged.BuildStepStarted(
                 parentBuild.buildId,
                 updatedState,
-                event.name,
+                stepName,
             ),
         )
 
@@ -106,15 +121,17 @@ class DistributedBuildStateTracker(
     context(_: Raise<Error>)
     private suspend fun buildStepFinished(
         parentBuild: SBuild,
-        event: BuildStepCompleted,
+        eventBuild: SBuild,
+        stepName: String,
+        outcome: StepOutcome,
     ): DistributedBuildState {
         // assume all steps after the failed one are skipped
         val skippedSteps =
-            if (event.outcome == StepOutcome.Failure) {
+            if (outcome == StepOutcome.Failure) {
                 stateStorage
                     .get(parentBuild)
-                    .findBuild(event.build.buildTypeName)
-                    .getAllStepsAfter(event.name)
+                    .findBuild(eventBuild.buildTypeName)
+                    .getAllStepsAfter(stepName)
                     .asSkipped()
             } else {
                 emptySequence()
@@ -123,15 +140,15 @@ class DistributedBuildStateTracker(
         val updatedState =
             stateStorage.update(
                 parentBuild,
-                sequenceOf(BuildStep(event.name, BuildStepState.Completed, event.outcome)) + skippedSteps,
+                sequenceOf(BuildStep(stepName, BuildStepState.Completed, outcome)) + skippedSteps,
             )
 
         eventBus.dispatch(
             DistributedBuildStateChanged.BuildStepCompleted(
                 parentBuild.buildId,
                 updatedState,
-                event.name,
-                event.outcome,
+                stepName,
+                outcome,
             ),
         )
 
@@ -141,27 +158,28 @@ class DistributedBuildStateTracker(
     context(_: Raise<Error>)
     private suspend fun buildStepInterrupted(
         parentBuild: SBuild,
-        event: BuildStepInterrupted,
+        eventBuild: SBuild,
+        stepName: String,
     ): DistributedBuildState {
         val skippedSteps =
             stateStorage
                 .get(parentBuild)
-                .findBuild(event.build.buildTypeName)
-                .getAllStepsAfter(event.name)
+                .findBuild(eventBuild.buildTypeName)
+                .getAllStepsAfter(stepName)
                 .asSkipped()
 
         val updatedState =
             stateStorage.update(
                 parentBuild,
-                sequenceOf(BuildStep(event.name, BuildStepState.Interrupted)) + skippedSteps,
+                sequenceOf(BuildStep(stepName, BuildStepState.Interrupted)) + skippedSteps,
             )
 
         eventBus.dispatch(
             DistributedBuildStateChanged.BuildStepInterrupted(
                 parentBuild.buildId,
                 updatedState,
-                event.build.buildTypeName,
-                event.name,
+                eventBuild.buildTypeName,
+                stepName,
             ),
         )
 

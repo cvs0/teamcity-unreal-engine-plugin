@@ -135,6 +135,8 @@ Currently, there are a few settings that you should be aware of:
 * When distributing a build it usually makes sense to set up a proper shared storage. Currently,
   you have to specify network share in the similar fashion via declaring another agent property with the name
   `unreal-engine.build-graph.agent.shared-dir` for each of the agents participating in a build process.
+* Distributed node executions pass `-CleanNode` together with `-SingleNode`. UAT otherwise skips pulling files from
+  shared storage if a previous run left node manifests under `Engine/Saved/BuildGraph` on a persistent workspace.
 
 #### How does that work?
 
@@ -309,8 +311,8 @@ Recommended checks:
 
 ### Limitations
 
-* This plugin requires TeamCity 2023.05 or newer and is built against TeamCity 2026.1.
-* TeamCity 2026.1 requires Java 21 on the server and build agents. This plugin is compatible with Java 21.
+* This plugin requires TeamCity 2023.05 or newer and is built against TeamCity 2026.2 (build 238924).
+* TeamCity 2026.2 requires Java 21 on the server and build agents. This plugin is compatible with Java 21.
 * Currently, for the distributed BuildGraph mode to work,
   your build configuration must contain exactly one active build step.
   This should be addressed in [TW-89015](https://youtrack.jetbrains.com/issue/TW-89015)

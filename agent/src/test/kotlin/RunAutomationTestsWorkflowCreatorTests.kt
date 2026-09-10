@@ -6,7 +6,6 @@ import com.jetbrains.teamcity.plugins.framework.common.OSType
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealBuildContext
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealTool
 import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealToolRegistry
-import com.jetbrains.teamcity.plugins.unrealengine.agent.UnrealToolType
 import com.jetbrains.teamcity.plugins.unrealengine.agent.automation.tests.RunAutomationTestsWorkflowCreator
 import com.jetbrains.teamcity.plugins.unrealengine.agent.build.log.UnrealEngineProcessListenerFactory
 import com.jetbrains.teamcity.plugins.unrealengine.common.GenericError
@@ -48,7 +47,7 @@ class RunAutomationTestsWorkflowCreatorTests {
                         editor(any())
                     }
                 }
-            } returns UnrealTool("/foo/bar", UnrealToolType.AutomationTool)
+            } returns UnrealTool("/foo/bar")
         }
 
         with(environment) {

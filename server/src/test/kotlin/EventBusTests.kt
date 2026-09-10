@@ -1,4 +1,3 @@
-
 import com.jetbrains.teamcity.plugins.unrealengine.server.EventBus
 import com.jetbrains.teamcity.plugins.unrealengine.server.EventBusConfig
 import com.jetbrains.teamcity.plugins.unrealengine.server.EventBusConsumer
@@ -24,7 +23,6 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventBusTests {
     private data class TestEvent(
-        val key: Int,
         val data: String,
     )
 
@@ -40,61 +38,21 @@ class EventBusTests {
     }
 
     @Test
-    fun `maintains the order of event processing for the same partition key`() =
+    fun `maintains the order of event processing`() =
         runTest {
-            // arrange
             val eventBus = createBus()
 
-            val firstEvent =
-                TestEvent(
-                    key = 1,
-                    data = "some payload",
-                )
-            val secondEvent =
-                TestEvent(
-                    key = 1,
-                    data = "another payload",
-                )
+            val firstEvent = TestEvent("some payload")
+            val secondEvent = TestEvent("another payload")
 
-            // act
             eventBus.dispatch(firstEvent)
             eventBus.dispatch(secondEvent)
 
-            // assert that the first event has started processing
             advanceTimeBy(50)
             coVerify(exactly = 1) { consumer.consume(match { it.data == firstEvent.data }) }
             confirmVerified(consumer)
 
-            // assert that both events are processed after enough time has passed
             advanceTimeBy(51)
-            coVerify(exactly = 1) { consumer.consume(match { it.data == secondEvent.data }) }
-            confirmVerified(consumer)
-        }
-
-    @Test
-    fun `processes events with distinct partition keys independently`() =
-        runTest {
-            // arrange
-            val eventBus = createBus()
-
-            val firstEvent =
-                TestEvent(
-                    key = 1,
-                    data = "some payload",
-                )
-            val secondEvent =
-                TestEvent(
-                    key = 2,
-                    data = "another payload",
-                )
-
-            // act
-            eventBus.dispatch(firstEvent)
-            eventBus.dispatch(secondEvent)
-
-            // assert
-            advanceTimeBy(50)
-            coVerify(exactly = 1) { consumer.consume(match { it.data == firstEvent.data }) }
             coVerify(exactly = 1) { consumer.consume(match { it.data == secondEvent.data }) }
             confirmVerified(consumer)
         }
@@ -102,7 +60,6 @@ class EventBusTests {
     @Test
     fun `notifies when internal buffer overflows`() =
         runTest {
-            // arrange
             val droppedElements = mutableListOf<TestEvent>()
             val eventBus =
                 createBus(
@@ -111,24 +68,17 @@ class EventBusTests {
                     droppedElements.add(it)
                 }
 
-            // act
             (0..4).forEach {
-                eventBus.dispatch(
-                    TestEvent(
-                        key = 1,
-                        data = "payload $it",
-                    ),
-                )
+                eventBus.dispatch(TestEvent("payload $it"))
                 advanceTimeBy(5)
             }
             advanceUntilIdle()
 
-            // assert
             droppedElements.shouldNotBeEmpty()
             droppedElements.shouldHaveSize(2)
             droppedElements.shouldContainExactlyInAnyOrder(
-                TestEvent(key = 1, data = "payload 1"),
-                TestEvent(key = 1, data = "payload 2"),
+                TestEvent("payload 1"),
+                TestEvent("payload 2"),
             )
         }
 
@@ -138,12 +88,10 @@ class EventBusTests {
     ) = EventBus(
         EventBusConfig(
             "Test Bus",
-            2,
             bufferSize,
         ),
         backgroundScope,
         listOf(consumer),
-        partitioner = { it.key },
         onBufferOverflow = onBufferOverflow,
     )
 }

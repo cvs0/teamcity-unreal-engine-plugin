@@ -7,18 +7,19 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 internal class PrimaryAgentParametersSupplierTests {
     @Test
     fun `failure in one of the providers does not affect the final result`() {
-        val fooParameter = TeamCityParameter("foo", "foo", TeamCityParameter.Type.ConfigurationParameter)
+        val fooParameter = TeamCityParameter("foo", "foo")
         val fooProvider = AgentParametersProvider { listOf(fooParameter) }
-        val barParameter = TeamCityParameter("bar", "bar", TeamCityParameter.Type.ConfigurationParameter)
+        val barParameter = TeamCityParameter("bar", "bar")
         val barProvider = AgentParametersProvider { listOf(barParameter) }
         val errorProneProvider = AgentParametersProvider { throw Exception("something went wrong") }
         val supplier = PrimaryAgentParametersSupplier(listOf(fooProvider, barProvider, errorProneProvider))
 
-        val parameters = supplier.parameters
+        val parameters = supplier.getParameters()
 
         assertNotNull(parameters)
         assertContains(parameters, fooParameter.key)
@@ -28,68 +29,42 @@ internal class PrimaryAgentParametersSupplierTests {
     @Test
     fun `should perform parameters discovery only once`() {
         var counter = 0
-        val countProvider = AgentParametersProvider {
-            counter++
-            listOf()
-        }
+        val countProvider =
+            AgentParametersProvider {
+                counter++
+                listOf()
+            }
         val supplier = PrimaryAgentParametersSupplier(listOf(countProvider))
 
-        supplier.parameters
+        supplier.getParameters()
         supplier.environmentVariables
         supplier.systemProperties
-        supplier.parameters
+        supplier.getParameters()
 
         assertEquals(1, counter)
     }
 
-    private val configurationParameter = "foo"
-    private val configurationParameterProvider = AgentParametersProvider {
-        listOf(TeamCityParameter(configurationParameter, configurationParameter, TeamCityParameter.Type.ConfigurationParameter))
-    }
+    @Test
+    fun `should return configuration parameters`() {
+        val supplier =
+            PrimaryAgentParametersSupplier(
+                listOf(AgentParametersProvider { listOf(TeamCityParameter("foo", "foo")) }),
+            )
 
-    private val environmentVariable = "bar"
-    private val environmentVariableProvider = AgentParametersProvider {
-        listOf(TeamCityParameter(environmentVariable, environmentVariable, TeamCityParameter.Type.EnvironmentVariable))
-    }
+        val result = supplier.getParameters()
 
-    private val systemProperty = "baz"
-    private val systemPropertyProvider = AgentParametersProvider {
-        listOf(TeamCityParameter(systemProperty, systemProperty, TeamCityParameter.Type.SystemProperty))
+        assertEquals(1, result.size)
+        assertContains(result, "foo")
     }
 
     @Test
-    fun `should only return configuration parameters when they are requested`() {
-        val supplier = PrimaryAgentParametersSupplier(
-            listOf(configurationParameterProvider, environmentVariableProvider, systemPropertyProvider),
-        )
+    fun `should not expose environment variables or system properties`() {
+        val supplier =
+            PrimaryAgentParametersSupplier(
+                listOf(AgentParametersProvider { listOf(TeamCityParameter("foo", "foo")) }),
+            )
 
-        val result = supplier.parameters
-
-        assertEquals(1, result.size)
-        assertContains(result, configurationParameter)
-    }
-
-    @Test
-    fun `should only return environment variables when they are requested`() {
-        val supplier = PrimaryAgentParametersSupplier(
-            listOf(configurationParameterProvider, environmentVariableProvider, systemPropertyProvider),
-        )
-
-        val result = supplier.environmentVariables
-
-        assertEquals(1, result.size)
-        assertContains(result, environmentVariable)
-    }
-
-    @Test
-    fun `should only return system properties when they are requested`() {
-        val supplier = PrimaryAgentParametersSupplier(
-            listOf(configurationParameterProvider, environmentVariableProvider, systemPropertyProvider),
-        )
-
-        val result = supplier.systemProperties
-
-        assertEquals(1, result.size)
-        assertContains(result, systemProperty)
+        assertTrue(supplier.environmentVariables.isEmpty())
+        assertTrue(supplier.systemProperties.isEmpty())
     }
 }

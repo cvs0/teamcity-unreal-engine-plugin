@@ -24,7 +24,8 @@ project.version = if (project.findProperty("version") == "unspecified") {
 val libs = the<LibrariesForLibs>()
 
 teamcity {
-    version = libs.versions.teamcity.get()
+    // Compile against published OpenAPI artifacts (patch builds are often not published to Maven).
+    version = libs.versions.teamcity.api.get()
     validateBeanDefinition = com.github.rodm.teamcity.ValidationMode.FAIL
 }
 
@@ -37,17 +38,17 @@ kotlin {
 spotless {
     kotlin {
         ktlint(libs.versions.ktlint.get())
-			.setEditorConfigPath("${rootDir}/.editorconfig")
+            .setEditorConfigPath("${rootDir}/.editorconfig")
     }
 }
 
 tasks {
     compileKotlin {
-		compilerOptions {
-			allWarningsAsErrors.set(true)
+        compilerOptions {
+            allWarningsAsErrors.set(true)
             freeCompilerArgs.add("-Xcontext-parameters")
             jvmTarget.set(JvmTarget.JVM_21)
-		}
+        }
     }
 
     compileTestKotlin {
@@ -63,4 +64,10 @@ tasks {
             events("passed", "skipped", "failed")
         }
     }
+}
+
+dependencies {
+    testImplementation(platform(libs.junit.bom))
+    testRuntimeOnly(libs.junit.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }

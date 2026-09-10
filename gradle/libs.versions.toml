@@ -1,11 +1,14 @@
 [versions]
 rodm = "1.5.6"
-kotlin = "2.2.21"
+kotlin = "2.3.21"
 coroutines = "1.11.0"
-serialization = "1.9.0"
-teamcity = "2026.1"
-ktor = "3.5.0"
-spotless = "7.2.1"
+serialization = "1.11.0"
+# TeamCity 2026.2 (build 238924). Compile against the published 2026.2 OpenAPI
+# artifacts and download the matching 2026.2 distribution.
+teamcity-dist = "2026.2"
+teamcity-api = "2026.2"
+ktor = "3.5.1"
+spotless = "8.8.0"
 ktlint = "1.8.0"
 
 [libraries]
@@ -13,7 +16,10 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlin-serialization-properties = { module = "org.jetbrains.kotlinx:kotlinx-serialization-properties", version.ref = "serialization" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
-arrow-core = { module = "io.arrow-kt:arrow-core", version = "2.2.2" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+arrow-core = { module = "io.arrow-kt:arrow-core", version = "2.2.3" }
+teamcity-agent-api = { module = "org.jetbrains.teamcity:agent-api", version.ref = "teamcity-api" }
+teamcity-common-api = { module = "org.jetbrains.teamcity:common-api", version.ref = "teamcity-api" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
@@ -21,11 +27,12 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
-kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-mockk = { module = "io.mockk:mockk", version = "1.14.9" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.14.4" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.14.4" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version = "5.9.1" }
+mockk = { module = "io.mockk:mockk", version = "1.14.11" }
+junit-bom = { module = "org.junit:junit-bom", version = "6.1.2" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version = "6.2.3" }
 constraint-transitive-icu4j = { module = "com.ibm.icu:icu4j", version = { require = "3.4.4" } }
 
 [bundles]

@@ -1,11 +1,11 @@
 package com.jetbrains.teamcity.plugins.unrealengine.common.commandlets
 
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.raise
+import arrow.core.raise.context.raise
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
 import com.jetbrains.teamcity.plugins.unrealengine.common.UnrealProjectPath
 import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.TextInputParameter
-import jetbrains.buildServer.util.StringUtil
+import com.jetbrains.teamcity.plugins.unrealengine.common.parameters.parseCommandLineArguments
 
 object CommandletProjectPathParameter : TextInputParameter {
     override val name = "commandlet-project"
@@ -57,10 +57,5 @@ object CommandletArgumentsParameter : TextInputParameter {
     override val expandable = true
     override val advanced = false
 
-    fun parse(runnerParameters: Map<String, String>): List<String> =
-        runnerParameters[name]?.let { argumentString ->
-            StringUtil
-                .splitCommandArgumentsAndUnquote(argumentString)
-                .filter { !it.isNullOrBlank() }
-        } ?: emptyList()
+    fun parse(runnerParameters: Map<String, String>): List<String> = parseCommandLineArguments(runnerParameters, name)
 }

@@ -17,7 +17,6 @@ fun setupTestUnrealBuildContext(context: UnrealBuildContext) {
         }
     every { context.build } returns mockk<AgentRunningBuild>()
     every { context.workingDirectory } returns "foo"
-    every { context.agentTempDirectory } returns "bar"
     every { context.runnerId } returns "Unreal_Engine"
     every { context.runnerName } returns "Unreal Engine"
     every { context.fileExists(any()) } answers { true }

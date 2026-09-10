@@ -3,7 +3,7 @@ package com.jetbrains.teamcity.plugins.unrealengine.common.automation.commands
 import arrow.core.NonEmptyList
 import arrow.core.nonEmptyListOf
 import arrow.core.raise.Raise
-import com.jetbrains.teamcity.plugins.framework.common.withError
+import arrow.core.raise.context.withError
 import com.jetbrains.teamcity.plugins.unrealengine.common.CommandExecutionContext
 import com.jetbrains.teamcity.plugins.unrealengine.common.GenericError
 import com.jetbrains.teamcity.plugins.unrealengine.common.PropertyValidationError
@@ -34,7 +34,7 @@ class RunAutomationCommand(
             }
     }
 
-    context(_: Raise<GenericError>, context: CommandExecutionContext)
+    context(raise: Raise<GenericError>, context: CommandExecutionContext)
     override fun toArguments() =
         buildList {
             add(command.value)

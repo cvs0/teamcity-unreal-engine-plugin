@@ -54,7 +54,7 @@ class UnrealEngineBuildSession(
     override fun sessionFinished(): BuildFinishedStatus {
         processPreviousCommandCompletion()
 
-        return workflow.onCompletion(unrealBuildContext, exitCodes)
+        return with(unrealBuildContext) { workflow.complete(exitCodes) }
     }
 
     private fun processPreviousCommandCompletion() {
