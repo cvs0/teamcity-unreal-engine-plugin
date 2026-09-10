@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## 1.4.0 - 2026-09-10
+
+### Added
+
 - Distributed BuildGraph now passes `-CleanNode` with `-SingleNode` so UAT clears locally cached node manifests before pulling from shared storage. This avoids silent skipped downloads on agents with persistent workspaces ([upstream #42](https://github.com/JetBrains/teamcity-unreal-engine-plugin/pull/42)).
 
 ### Changed
